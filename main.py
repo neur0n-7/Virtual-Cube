@@ -9,13 +9,6 @@ July 2024
 stuff to do:
 	- fix the occasional visual glictch/jumpiness, happens with average_z sorting
 	- cube reset glides farther direction
-
-Modules:
-	pygame
-	numpy
-
-	os
-	random
 """
 
 # --- IMPORTS -------------------------------------------------------------------------------------------------
