@@ -15,6 +15,7 @@ stuff to do:
 # --- IMPORTS -------------------------------------------------------------------------------------------------
 from os import system, environ, path
 from random import choice, randint
+from time import sleep
 
 # Install pygame and numpy if they aren't already installed
 try:
@@ -38,46 +39,7 @@ except (ModuleNotFoundError, ImportError):
 	print("numpy module installed.")
 
 # --- CONSTANTS ------------------------------------------------------------------------------------------------
-CAMERA_X = 150
-CAMERA_Y = 200
-FOCAL_LENGTH = 500
-
-SCREEN_WIDTH = 600
-SCREEN_HEIGHT = 720
-FPS = 60
-
-SPIN_FACTOR = 0.9
-NORMAL_CUBE_TURN_SPEED = 7.5
-SCRAMBLE_CUBE_TURN_SPEED = 15
-SCRAMBLE_RANGE = (20, 30)
-
-# Rubik's Cube RGB colors taken from online images of GAN cubes
-COLORS  = {
-	"white": (241,244,237),
-	"yellow": (246,241,41),
-	"red": (255,57,38),
-	"green": (37,219,53),
-	"blue": (12,82,241),
-	"orange": (250,138,45),
-	"background": (220, 220, 220),
-	"black": (0, 0, 0),
-	"border": (0, 0, 0),
-	"interior": (0, 0, 0)
-}
-
-# Visual effect
-INSTRUCTIONS_DELAY_SECS = 0.5
-INSTRUCTIONS_FADE_SECS = 0.75
-FADE_OUT_SECS = 0.25
-
-DRAW_INTERIOR = True
-
-RESET_TYPE = "FADE" # "GLIDE" or "FADE"
-
-if RESET_TYPE == "FADE":
-	RESET_FADE_SECONDS = 0.25
-	RESET_FADE_FRAMES = int(RESET_FADE_SECONDS*FPS)
-
+from config import *
 
 ALL_MOVES = ["U", "U'", "D", "D'", "F", "F'", "B", "B'", "L", "L'", "R", "R'"] # MES excluded
 
@@ -279,7 +241,6 @@ SOLVED_CUBELETS = {
 }
 
 # --- VARIABLES ------------------------------------------------------------------------------------------------
-
 rubiks_cube = SOLVED_CUBE.copy()
 cubelets = SOLVED_CUBELETS.copy()
 cube_turn_speed = NORMAL_CUBE_TURN_SPEED
@@ -706,10 +667,10 @@ def drawAll(cube, cube_opacity=100):
 			   font="verdana", size=20, alpha=min(instructions_alpha, 255))
 		
 		text("F, B, L, R, U, and D keys to turn", SCREEN_WIDTH/2, SCREEN_HEIGHT/2.5+70,
-			   font="verdana", size=20, alpha=min(instructions_alpha, 355)-100)
+			   font="verdana", size=20, alpha=min(instructions_alpha, 255+INSTRUCTION_GAP_FRAMES)-INSTRUCTION_GAP_FRAMES)
 		
 		text("Shift to turn counter-clockwise", SCREEN_WIDTH/2, SCREEN_HEIGHT/2.5+100,
-			   font="verdana", size=20, alpha=min(instructions_alpha, 455)-200)
+			   font="verdana", size=20, alpha=min(instructions_alpha, 255+INSTRUCTION_GAP_FRAMES*2)-INSTRUCTION_GAP_FRAMES*2)
 
 	elif post_start_frames < FADE_OUT_SECS*FPS: # Fade out
 		all_alpha = 255 - (post_start_frames / (FADE_OUT_SECS*FPS) * 255)
@@ -1037,6 +998,7 @@ def main():
 				if RESET_TYPE == "FADE":
 					for alpha in reversed(np.linspace(0, 100, RESET_FADE_FRAMES)):
 						drawAll(rubiks_cube, int(alpha))
+					sleep(RESET_PAUSE_SECONDS)
 				
 				mouse_xvel = 0
 				mouse_yvel = 0
