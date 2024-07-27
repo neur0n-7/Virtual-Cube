@@ -14,3 +14,9 @@ Requires modules pygame and numpy. If they are not already installed, the progra
 * Each move is clockwise when looking directly at the face your are turning.
 * To execute a prime move (counterclockwise move), hold shift while moving a face.
 * Adding support for slice moves (M, E, and S) soon
+
+### Download  
+1. Download the latest stable version of Python 3.X from https://www.python.org/downloads/ if you haven't already done so. (This was made with Python 3.12.4)
+2. Download this repository as a .zip file.
+3. Extract the .zip into a folder.
+4. Run main.py from the terminal, IDLE, or any other IDE/text editor that supports Python.
