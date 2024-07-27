@@ -4,6 +4,7 @@
 Virtual Rubik's Cube
 
 Anish Gupta
+(neur0n-7 on Github)
 July 2024
 
 stuff to do:
@@ -45,8 +46,10 @@ SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 720
 FPS = 60
 
+SPIN_FACTOR = 0.9
 NORMAL_CUBE_TURN_SPEED = 7.5
 SCRAMBLE_CUBE_TURN_SPEED = 15
+SCRAMBLE_RANGE = (20, 30)
 
 # Rubik's Cube RGB colors taken from online images of GAN cubes
 COLORS  = {
@@ -69,10 +72,10 @@ FADE_OUT_SECS = 0.25
 
 DRAW_INTERIOR = True
 
-RESET_TYPE = "GLIDE" # "GLIDE" or "FADE"
+RESET_TYPE = "FADE" # "GLIDE" or "FADE"
 
 if RESET_TYPE == "FADE":
-	RESET_FADE_SECONDS = 1
+	RESET_FADE_SECONDS = 0.25
 	RESET_FADE_FRAMES = int(RESET_FADE_SECONDS*FPS)
 
 
@@ -376,7 +379,7 @@ def scramble():
 	cube_turn_speed = SCRAMBLE_CUBE_TURN_SPEED
 
 	scramble_progress = 0
-	times = randint(20, 30)
+	times = randint(*SCRAMBLE_RANGE)
 
 	for i in range(times):
 
@@ -698,16 +701,15 @@ def drawAll(cube, cube_opacity=100):
 			instructions_alpha = 0
 
 		instructions_alpha = max(instructions_alpha, 0)
-		instructions_alpha = min(instructions_alpha, 255)
 
 		text("Click and drag to rotate", SCREEN_WIDTH/2, SCREEN_HEIGHT/2.5+40,
-			   font="verdana", size=20, alpha=instructions_alpha)
+			   font="verdana", size=20, alpha=min(instructions_alpha, 255))
 		
 		text("F, B, L, R, U, and D keys to turn", SCREEN_WIDTH/2, SCREEN_HEIGHT/2.5+70,
-			   font="verdana", size=20, alpha=instructions_alpha)
+			   font="verdana", size=20, alpha=min(instructions_alpha, 355)-100)
 		
 		text("Shift to turn counter-clockwise", SCREEN_WIDTH/2, SCREEN_HEIGHT/2.5+100,
-			   font="verdana", size=20, alpha=instructions_alpha)
+			   font="verdana", size=20, alpha=min(instructions_alpha, 455)-200)
 
 	elif post_start_frames < FADE_OUT_SECS*FPS: # Fade out
 		all_alpha = 255 - (post_start_frames / (FADE_OUT_SECS*FPS) * 255)
@@ -877,10 +879,8 @@ def main():
 
 	pygame.display.set_icon(pygame.image.load(path.dirname(__file__)+"/icon.png"))
 
-	# Next line triggers NSApplicationDelegate's warning for some reason
+	# Next line triggers NSApplicationDelegate's warning for some reason on Mac
 	screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
-
-
 
 	running = True
 
@@ -950,8 +950,8 @@ def main():
 				initial_mouse_pos = current_mouse_pos
 			else:
 				if abs(mouse_xvel) > 0.005 or abs(mouse_yvel) > 0.005:
-					mouse_xvel *= 0.9
-					mouse_yvel *= 0.9
+					mouse_xvel *= SPIN_FACTOR
+					mouse_yvel *= SPIN_FACTOR
 				else:
 					mouse_xvel = 0
 					mouse_yvel = 0
@@ -980,39 +980,39 @@ def main():
 
 			elif keys_pressed[pygame.K_u]:
 				top = topFace()
-				if top == COLORS["white"]:		move = "U"
-				elif top == COLORS["blue"]:		move = "R"
+				if top == COLORS["white"]:			move = "U"
+				elif top == COLORS["blue"]:			move = "R"
 				elif top == COLORS["green"]:		move = "L"
 				elif top == COLORS["yellow"]:		move = "D"
 				elif top == COLORS["orange"]:		move = "B"
-				elif top == COLORS["red"]:		move = "F"
+				elif top == COLORS["red"]:			move = "F"
 
 			elif keys_pressed[pygame.K_d]:
 				top = topFace()
-				if top == COLORS["white"]:		move = "D"
-				elif top == COLORS["blue"]:		move = "L"
+				if top == COLORS["white"]:			move = "D"
+				elif top == COLORS["blue"]:			move = "L"
 				elif top == COLORS["green"]:		move = "R"
 				elif top == COLORS["yellow"]:		move = "U"
 				elif top == COLORS["orange"]:		move = "F"
-				elif top == COLORS["red"]:		move = "B"
+				elif top == COLORS["red"]:			move = "B"
 
 			elif keys_pressed[pygame.K_l]:
 				left = leftFace()
-				if left == COLORS["green"]:		move = "L"
+				if left == COLORS["green"]:			move = "L"
 				elif left == COLORS["white"]:		move = "U"
 				elif left == COLORS["yellow"]:		move = "D"
 				elif left == COLORS["blue"]:		move = "R"
 				elif left == COLORS["orange"]:		move = "B"
-				elif left == COLORS["red"]:		move = "F"
+				elif left == COLORS["red"]:			move = "F"
 			
 			elif keys_pressed[pygame.K_r]:
 				left = leftFace()
-				if left == COLORS["green"]:		move = "R"
+				if left == COLORS["green"]:			move = "R"
 				elif left == COLORS["white"]:		move = "D"
 				elif left == COLORS["yellow"]:		move = "U"
 				elif left == COLORS["blue"]:		move = "L"
 				elif left == COLORS["orange"]:		move = "F"
-				elif left == COLORS["red"]:		move = "B"
+				elif left == COLORS["red"]:			move = "B"
 				
 			if move:
 				if keys_pressed[pygame.K_LSHIFT] or keys_pressed[pygame.K_RSHIFT]:
@@ -1097,5 +1097,3 @@ def main():
 
 if __name__ == "__main__":
 	main()
-
-
