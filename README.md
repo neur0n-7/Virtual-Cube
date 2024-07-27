@@ -9,4 +9,8 @@ Requires modules pygame and numpy. If they are not already installed, the progra
 
 ### Instructions  
 * Click and drag with your mouse/touchpad/touchscreen to rotate/look aruond the cube.  
-* Use the F, B, L, R, U, and D keys to move.  
+* Use the F, B, L, R, U, and D keys to move.
+* F = Front, B = Back, L = Left, R = Right, U = Up, D = Down
+* Each move is clockwise when looking directly at the face your are turning.
+* To execute a prime move (counterclockwise move), hold shift while moving a face.
+* Adding support for slice moves (M, E, and S) soon
