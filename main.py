@@ -1053,7 +1053,7 @@ def main():
 		yaxis_rot = yaxis_rot % 360
 		zaxis_rot = zaxis_rot % 360
 
-	print("Done!")
+	pygame.quit()
 	quit()
 
 if __name__ == "__main__":
