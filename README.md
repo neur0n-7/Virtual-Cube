@@ -5,3 +5,8 @@ Preview on Windows 11:
 ![image](https://github.com/user-attachments/assets/8eb2a847-7a48-48b1-9dea-5e6f74b70cba)
 
 Requires modules pygame and numpy. If they are not already installed, the program will install them on your system.
+
+
+### Instructions  
+* Click and drag with your mouse/touchpad/touchscreen to rotate/look aruond the cube.  
+* Use the F, B, L, R, U, and D keys to move.  
