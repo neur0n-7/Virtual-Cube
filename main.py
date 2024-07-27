@@ -7,9 +7,6 @@ Anish Gupta
 (neur0n-7 on Github)
 July 2024
 
-stuff to do:
-	- fix the occasional visual glictch/jumpiness, happens with average_z sorting
-	- cube reset glides farther direction
 """
 
 # --- IMPORTS -------------------------------------------------------------------------------------------------
@@ -1056,6 +1053,8 @@ def main():
 		yaxis_rot = yaxis_rot % 360
 		zaxis_rot = zaxis_rot % 360
 
+	print("Done!")
+	quit()
 
 if __name__ == "__main__":
 	main()
