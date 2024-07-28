@@ -26,10 +26,6 @@ Requires modules pygame and numpy. If they are not already installed, the progra
   <li>To execute a prime move (counterclockwise move), hold shift while moving a face</li>
   <li>Adding support for slice moves (M, E, and S) soon</li>
 </ul>
- 
-## Report Issues  
-If you encounter an issue with Virtual Cube, open an issue on Github.  
-If you are unsure on how to open a issue, see [this link](https://docs.github.com/en/issues/tracking-your-work-with-issues/quickstart).
 
 ## How does it work?
 
@@ -90,4 +86,10 @@ The rubik's cube is represented as 54 squares, each corresponding to a color on 
 Turning the faces of the cube is slightly more difficult. There are 26 cubelets on the cube (excluding the middle one), and each cubelet is linked to its corresponding squares. When rotating a face, the program selects which cubelets to rotate, which is used to determine which squares to rotate. The selected squares are rotated
 a certain number of times around the middle of the face by a certain number of degrees such that the number of degrees per turn times the number of turns is equal to 90. The squares are rounded to the nearest integer, and the cubelets are also rotated and rounded in one go by 90 degrees.  
 
-Before turning the face, 2 additional squares are added to the rubik's cube that are removed after the turn is complete. These squares are the inside of the rubik's cube.
+Before turning the face, 2 additional squares are added to the rubik's cube that are removed after the turn is complete. These squares are the inside of the rubik's cube and exist purely for visual reasons.
+
+## Report Issues  
+If you encounter an issue with Virtual Cube, open an issue on Github.  
+If you are unsure on how to open a issue, see [this link](https://docs.github.com/en/issues/tracking-your-work-with-issues/quickstart).
+
+
