@@ -17,7 +17,7 @@ Requires modules pygame and numpy. If they are not already installed, the progra
 
 `config.py` contains the constants needed to run `main.py`. To change any settings of Virutal Cube, you can edit `config.py`'s settings to your desire.
 
-### Instructions  
+## Instructions  
 <ul>
   <li>Click and drag with your mouse/touchpad/touchscreen to rotate/look around the cube</li>
   <li>Use the F, B, L, R, U, and D keys to move</li>
@@ -27,11 +27,11 @@ Requires modules pygame and numpy. If they are not already installed, the progra
   <li>Adding support for slice moves (M, E, and S) soon</li>
 </ul>
  
-### Report Issues  
+## Report Issues  
 If you encounter an issue with Virtual Cube, open an issue on Github.  
 If you are unsure on how to open a issue, see [this link](https://docs.github.com/en/issues/tracking-your-work-with-issues/quickstart).
 
-### How does it work?
+## How does it work?
 
 Virtual Cube uses raycasting to generate a 2D projection of the 3D rubik's cube.
 
