@@ -594,7 +594,7 @@ def turn(move):
 
 
 def drawAll(cube, cube_opacity=100):
-	global average_zs, rotated_cube
+	global average_zs, rotated_cube, pre_start_frames, post_start_frames
 
 	# --- RUBIK'S CUBE ------------------------------------------------------------
 	# Rotate the rubiks cube
@@ -668,6 +668,8 @@ def drawAll(cube, cube_opacity=100):
 		
 		text("Shift to turn counter-clockwise", SCREEN_WIDTH/2, SCREEN_HEIGHT/2.5+100,
 			   font="verdana", size=20, alpha=min(instructions_alpha, 255+INSTRUCTION_GAP_FRAMES*2)-INSTRUCTION_GAP_FRAMES*2)
+		
+		pre_start_frames += 1
 
 	elif post_start_frames < FADE_OUT_SECS*FPS: # Fade out
 		all_alpha = 255 - (post_start_frames / (FADE_OUT_SECS*FPS) * 255)
@@ -685,6 +687,8 @@ def drawAll(cube, cube_opacity=100):
 		
 		# Write FPS
 		text(f"FPS: {int(clock.get_fps())}", 20, 20, font="verdana", size=18, color=(0, 0, 0), alpha=200-all_alpha, centered=False)
+
+		post_start_frames += 1
 
 	else:
 		# Write FPS
@@ -1018,6 +1022,8 @@ def main():
 
 		if scrambleButton.collidepoint(pygame.mouse.get_pos()):
 			if pygame.mouse.get_pressed()[0] and not mouse_dragging and not scrambling:
+				if not started:
+					started = True
 				scrambling = True
 				scramble()
 				scrambling = False
