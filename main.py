@@ -1035,7 +1035,7 @@ def main():
 
 		if do_glide:
 			# Glide to target (it looks cool)
-			glideCubeRot(13, 328)
+			glideCubeRot(20, 325)
 
 			do_glide = False
 
