@@ -14,7 +14,8 @@
 > If you are still unable to run it, try specfically downloading version 3.12.4.
 
 Requires modules pygame and numpy. If they are not already installed, the program will install them on your system with `os.system()`.  
-`config.py` contains the constants needed to run `main.py`.
+
+`config.py` contains the constants needed to run `main.py`. To change any settings of Virutal Cube, you can edit `config.py`'s settings to your desire.
 
 ### Instructions  
 <ul>
