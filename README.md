@@ -1,7 +1,7 @@
 
 <div align="center">
     <h1>Virtual Cube</h1>
-    <p><strong>Virtual 3D Rubik's Cube using pygame</strong></p>
+    <p><strong>A virtual 3D Rubik's Cube using pygame without any external 3D engine.</strong></p>
 
 
 ![image](https://github.com/user-attachments/assets/8eb2a847-7a48-48b1-9dea-5e6f74b70cba)
