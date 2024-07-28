@@ -21,7 +21,7 @@ try:
 	import pygame.gfxdraw
 except (ModuleNotFoundError, ImportError):
 	print("pygame module not found. Installing now...")
-	system("pip install pygame -q -q") # -q -q to only show errors and criticals
+	system("pip install pygame==2.6.0 -q -q") # -q -q to only show errors and criticals
 	environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide" # hide pygame support prompt
 	import pygame
 	import pygame.gfxdraw
@@ -31,7 +31,7 @@ try:
 	import numpy as np
 except (ModuleNotFoundError, ImportError):
 	print("numpy module not found. Installing now...")
-	system("pip install numpy -q -q") # -q -q to only show errors and criticals
+	system("pip install numpy==1.26.4 -q -q") # -q -q to only show errors and criticals
 	import numpy as np
 	print("numpy module installed.")
 
