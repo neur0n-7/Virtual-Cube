@@ -1,4 +1,11 @@
 
+"""
+Virtual Cube (config.py)
+Contains different configuration settings for Virtual Cube.
+This file is imported in main.py.
+"""
+
+
 # CAMERA SETTINGS
 CAMERA_X = 150
 CAMERA_Y = 200
