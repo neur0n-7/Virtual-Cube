@@ -1,7 +1,10 @@
 
 """
 
-Virtual Rubik's Cube
+Virtual Cube (main.py)
+A 3D Virtual Rubik's Cube using pygame
+
+For more information, see README.md.
 
 Anish Gupta
 (neur0n-7 on Github)
