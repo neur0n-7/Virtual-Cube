@@ -86,7 +86,7 @@ a certain number of times around the middle of the face by a certain number of d
 
 Before turning the face, 2 additional squares are added to the rubik's cube that are removed after the turn is complete. These squares are the inside of the rubik's cube and exist purely for visual reasons. They are not added to the cubelets.
 
-*The code for executing a turn is located in `turn()` in `main.py`. The code for drawing the cube, along with other things like the start screen, FPS, and buttons, is located in `drawAll()`.
+*The code for executing a turn is located in `turn()` in `main.py`. The code for drawing the cube, along with other things like the start screen, FPS, and buttons, is located in `drawAll()`.*
 
 ## Report Issues  
 If you encounter an issue with Virtual Cube, open an issue on Github.  
