@@ -689,13 +689,15 @@ def drawAll(cube, cube_opacity=100):
 			   font="verdana", size=20, alpha=all_alpha)
 		
 		# Write FPS
-		text(f"FPS: {int(clock.get_fps())}", 20, 20, font="verdana", size=18, color=(0, 0, 0), alpha=200-all_alpha, centered=False)
+		if SHOW_FPS:
+			text(f"FPS: {int(clock.get_fps())}", 20, 20, font="verdana", size=18, color=(0, 0, 0), alpha=200-all_alpha, centered=False)
 
 		post_start_frames += 1
 
 	else:
 		# Write FPS
-		text(f"FPS: {int(clock.get_fps())}", 20, 20, font="verdana", size=18, color=(0, 0, 0), centered=False)
+		if SHOW_FPS:
+			text(f"FPS: {int(clock.get_fps())}", 20, 20, font="verdana", size=18, color=(0, 0, 0), centered=False)
 
 	# --- TIME ------------------------------------------------------------
 	if scrambled and not solved:
