@@ -1,16 +1,16 @@
 
-"""
 
-Virtual Cube (main.py)
-A 3D Virtual Rubik's Cube using pygame
+# 
+#  Virtual Cube (main.py)
+#  A 3D Virtual Rubik's Cube using pygame
+# 
+#  For more information, see README.md.
+# 
+#  Anish Gupta
+#  (neur0n-7 on Github)
+#  July 2024
+#
 
-For more information, see README.md.
-
-Anish Gupta
-(neur0n-7 on Github)
-July 2024
-
-"""
 
 # --- IMPORTS -------------------------------------------------------------------------------------------------
 from os import system, environ, path
