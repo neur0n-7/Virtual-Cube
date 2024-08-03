@@ -92,7 +92,3 @@ Before turning the face, 2 additional squares are added to the rubik's cube that
 If you encounter an issue with Virtual Cube, open an issue on Github.  
 If you are unsure on how to open a issue, see [this link](https://docs.github.com/en/issues/tracking-your-work-with-issues/quickstart).
 
-
-*This README may not generate correctly on mobile devices.*
-
-
