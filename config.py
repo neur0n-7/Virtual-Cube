@@ -44,4 +44,5 @@ if RESET_TYPE == "FADE":
 	RESET_FADE_FRAMES = int(RESET_FADE_SECONDS*FPS)
 	RESET_PAUSE_SECONDS = 0.25 # How long to pause after fading out before fading in again
 
-print("To run Virtual Cube, run main.py instead of this file (config.py).")
+if __name__ == "__main__":
+	print("To run Virtual Cube, run main.py instead of this file (config.py).")
