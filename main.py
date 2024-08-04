@@ -1,16 +1,13 @@
 
+"""
 
-# 
-#  Virtual Cube (main.py)
-#  A 3D Virtual Rubik's Cube using pygame
-# 
-#  For more information, see README.md.
-# 
-#  Anish Gupta
-#  (neur0n-7 on Github)
-#  July 2024
-#
+Virtual Rubik's Cube
 
+Anish Gupta
+(neur0n-7 on Github)
+July 2024
+
+"""
 
 # --- IMPORTS -------------------------------------------------------------------------------------------------
 from os import system, environ, path
@@ -689,15 +686,13 @@ def drawAll(cube, cube_opacity=100):
 			   font="verdana", size=20, alpha=all_alpha)
 		
 		# Write FPS
-		if SHOW_FPS:
-			text(f"FPS: {int(clock.get_fps())}", 20, 20, font="verdana", size=18, color=(0, 0, 0), alpha=200-all_alpha, centered=False)
+		text(f"FPS: {int(clock.get_fps())}", 20, 20, font="verdana", size=18, color=(0, 0, 0), alpha=200-all_alpha, centered=False)
 
 		post_start_frames += 1
 
 	else:
 		# Write FPS
-		if SHOW_FPS:
-			text(f"FPS: {int(clock.get_fps())}", 20, 20, font="verdana", size=18, color=(0, 0, 0), centered=False)
+		text(f"FPS: {int(clock.get_fps())}", 20, 20, font="verdana", size=18, color=(0, 0, 0), centered=False)
 
 	# --- TIME ------------------------------------------------------------
 	if scrambled and not solved:
@@ -994,7 +989,7 @@ def main():
 					
 		else:
 			pre_start_frames += 1
-			mouse_xvel = -0.15
+			mouse_xvel = -9/FPS
 
 		drawAll(rubiks_cube)
 		
