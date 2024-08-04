@@ -1,11 +1,4 @@
 
-"""
-Virtual Cube (config.py)
-Contains different configuration settings for Virtual Cube.
-This file is imported in main.py.
-"""
-
-
 # CAMERA SETTINGS
 CAMERA_X = 150
 CAMERA_Y = 200
@@ -15,7 +8,6 @@ FOCAL_LENGTH = 500
 SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 720
 FPS = 60
-SHOW_FPS = True
 
 # COLORS
 COLORS  = {
