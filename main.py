@@ -13,6 +13,7 @@ July 2024
 from os import system, environ, path
 from random import choice, randint
 from time import sleep
+import sys
 
 # Install pygame and numpy if they aren't already installed
 try:
@@ -244,11 +245,11 @@ cube_turn_speed = NORMAL_CUBE_TURN_SPEED
 centers = SOLVED_CENTERS.copy()
 
 # --- OBJECTS --------------------------------------------------------------------------------------------------
-resetButton = pygame.Rect(SCREEN_WIDTH/5, 540, SCREEN_WIDTH/5*3, 70)
-scrambleButton = pygame.Rect(SCREEN_WIDTH/5, 620, SCREEN_WIDTH/5*3, 70)
+reset_button = pygame.Rect(SCREEN_WIDTH/5, 540, SCREEN_WIDTH/5*3, 70)
+scramble_button = pygame.Rect(SCREEN_WIDTH/5, 620, SCREEN_WIDTH/5*3, 70)
 
 # --- FUNCIONS -------------------------------------------------------------------------------------------------
-def getProjection(x,y,z):
+def get_projection(x,y,z):
 	# Get the projection of a 3D point on the 2D screen at z=0
 	x_proj = ((FOCAL_LENGTH*(x-CAMERA_X))/(FOCAL_LENGTH+z))+CAMERA_X
 	y_proj = ((FOCAL_LENGTH*(y-CAMERA_Y))/(FOCAL_LENGTH+z))+CAMERA_Y
@@ -260,7 +261,7 @@ def real(x,y):
 	return (x+SCREEN_WIDTH/4, SCREEN_WIDTH-y-SCREEN_WIDTH/4)
 
 
-def drawPolygonAlpha(surface, color, points):
+def draw_polygon_alpha(surface, color, points):
 	# Credit: https://stackoverflow.com/a/64630102
 	lx, ly = zip(*points)
 	min_x, min_y, max_x, max_y = min(lx), min(ly), max(lx), max(ly)
@@ -270,14 +271,14 @@ def drawPolygonAlpha(surface, color, points):
 	surface.blit(shape_surf, target_rect)
 
 
-def isCubeUpsideDown():
+def is_cube_upside_down():
 	if 90<abs(xaxis_rot%360)<270:
 		return True
 	else:
 		return False
 
 
-def isCubeBackward():
+def is_cube_backward():
 	if 135<abs(yaxis_rot%360)<225:
 		return True
 	else:
@@ -297,7 +298,7 @@ def text(text, x, y, font, size, alpha=255, bold=False, color=(255,255,255), cen
 	screen.blit(surface, text_rect)
 	
 
-def rotatedPoint(x, y, z, xdegrees=0, ydegrees=0, zdegrees=0, center=(150,150,150)):
+def rotated_point(x, y, z, xdegrees=0, ydegrees=0, zdegrees=0, center=(150,150,150)):
 	def XROT_MATRIX(degrees):
 		# Returns the rotation matrix for a certain number of degrees around the x axis
 		rads = np.radians(degrees)
@@ -343,18 +344,19 @@ def scramble():
 
 		turn(choice(ALL_MOVES))
 		scramble_progress = round((i+1)/times*100, 1)
+		
 
 	scramble_progress = 100
 	cube_turn_speed = NORMAL_CUBE_TURN_SPEED
 
 
-def closestFace():
+def closest_face():
 	# Rotate centers
 	rotated_centers = {}
 	for key in SOLVED_CENTERS.keys():
 		rotated_center = []
 		for coords in key:
-			rotated_coords = rotatedPoint(*coords, xaxis_rot, yaxis_rot, zaxis_rot, center=(150, 150, 150))
+			rotated_coords = rotated_point(*coords, xaxis_rot, yaxis_rot, zaxis_rot, center=(150, 150, 150))
 			rotated_center.append(rotated_coords)
 		rotated_center = tuple(rotated_center)
 		rotated_centers[rotated_center]  = SOLVED_CENTERS[key]
@@ -366,13 +368,13 @@ def closestFace():
 	return rotated_centers[sorted_list[0]]
 		
 
-def topFace():
+def top_face():
 	# Rotate centers
 	rotated_centers = {}
 	for key in SOLVED_CENTERS.keys():
 		rotated_center = []
 		for coords in key:
-			rotated_coords = rotatedPoint(*coords, xaxis_rot, yaxis_rot, zaxis_rot, center=(150, 150, 150))
+			rotated_coords = rotated_point(*coords, xaxis_rot, yaxis_rot, zaxis_rot, center=(150, 150, 150))
 			rotated_center.append(rotated_coords)
 		rotated_center = tuple(rotated_center)
 		rotated_centers[rotated_center]  = SOLVED_CENTERS[key]
@@ -384,13 +386,13 @@ def topFace():
 	return rotated_centers[sorted_list[-1]]
 
 
-def leftFace():
+def left_face():
 	# Rotate centers
 	rotated_centers = {}
 	for key in SOLVED_CENTERS.keys():
 		rotated_center = []
 		for coords in key:
-			rotated_coords = rotatedPoint(*coords, xaxis_rot, yaxis_rot, zaxis_rot, center=(150, 150, 150))
+			rotated_coords = rotated_point(*coords, xaxis_rot, yaxis_rot, zaxis_rot, center=(150, 150, 150))
 			rotated_center.append(rotated_coords)
 		rotated_center = tuple(rotated_center)
 		rotated_centers[rotated_center]  = SOLVED_CENTERS[key]
@@ -523,7 +525,7 @@ def turn(move):
 		for index, square in enumerate(squares_to_rotate):
 			rotated_square = []
 			for x, y, z in square:
-				rotated_square.append(rotatedPoint(x, y, z, xrot_degs, yrot_degs, zrot_degs, rotation_center))
+				rotated_square.append(rotated_point(x, y, z, xrot_degs, yrot_degs, zrot_degs, rotation_center))
 
 			rotated_square = tuple(rotated_square)
 
@@ -531,8 +533,12 @@ def turn(move):
 
 			squares_to_rotate[index] = rotated_square
 
+		draw_all(rubiks_cube)
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				pygame.quit()
+				sys.exit()
 
-		drawAll(rubiks_cube)
 
 	to_add_keys = []
 	to_remove_keys = []
@@ -562,11 +568,11 @@ def turn(move):
 		for square in squares:
 			rotated_square = []
 			for x, y, z in square:
-				rotated_square.append(rotatedPoint(x, y, z, xrot_degs*times, yrot_degs*times, zrot_degs*times, rotation_center))
+				rotated_square.append(rotated_point(x, y, z, xrot_degs*times, yrot_degs*times, zrot_degs*times, rotation_center))
 
 			rotated_squares.append(tuple(rotated_square))
 
-		rotated_center = rotatedPoint(*cubelet_center, xrot_degs*times, yrot_degs*times, zrot_degs*times, rotation_center)
+		rotated_center = rotated_point(*cubelet_center, xrot_degs*times, yrot_degs*times, zrot_degs*times, rotation_center)
 	
 		cubelets[tuple(rotated_center)] = rotated_squares
 		
@@ -593,7 +599,7 @@ def turn(move):
 	cubelets = rounded_cubelets.copy()
 
 
-def drawAll(cube, cube_opacity=100):
+def draw_all(cube, cube_opacity=100):
 	global average_zs, rotated_cube, pre_start_frames, post_start_frames
 
 	# --- RUBIK'S CUBE ------------------------------------------------------------
@@ -603,7 +609,7 @@ def drawAll(cube, cube_opacity=100):
 	for vertices, color in cube.items():
 		temp = []
 		for vertex in vertices:
-			temp.append(tuple(rotatedPoint(vertex[0]*50, vertex[1]*50, vertex[2]*50, 
+			temp.append(tuple(rotated_point(vertex[0]*50, vertex[1]*50, vertex[2]*50, 
 								   xdegrees=xaxis_rot, ydegrees=yaxis_rot, zdegrees=zaxis_rot, center=(150, 150, 150))))
 			
 		rotated_cube[tuple(temp)] = color
@@ -622,31 +628,31 @@ def drawAll(cube, cube_opacity=100):
 		color_to_draw = rotated_cube[vertices]
 		real_projections = []
 		for vertex in vertices:
-			real_projections.append(real(*getProjection(vertex[0], vertex[1], vertex[2])))
+			real_projections.append(real(*get_projection(vertex[0], vertex[1], vertex[2])))
 		
 		if cube_opacity == 100:
 			pygame.draw.polygon(screen, color_to_draw, real_projections)
 			pygame.draw.aalines(screen, COLORS["border"], True, real_projections, blend=True)
 		else:
-			drawPolygonAlpha(screen, (*color_to_draw, cube_opacity/100*255), real_projections)
-			alphaLines(screen, (*COLORS["border"], cube_opacity/100*255), True, real_projections)
+			draw_polygon_alpha(screen, (*color_to_draw, cube_opacity/100*255), real_projections)
+			alpha_lines(screen, (*COLORS["border"], cube_opacity/100*255), True, real_projections)
 
 
 	# --- RESET BUTTON ------------------------------------------------------------
-	pygame.draw.rect(screen, COLORS["black"], resetButton, border_radius=20)
-	text("Reset", resetButton.centerx, resetButton.centery, font="verdana", size=20)
+	pygame.draw.rect(screen, COLORS["black"], reset_button, border_radius=20)
+	text("Reset", reset_button.centerx, reset_button.centery, font="verdana", size=20)
 
 	# --- SCRAMBLE BUTTON ------------------------------------------------------------
-	pygame.draw.rect(screen, COLORS["black"], scrambleButton, border_radius=20)
+	pygame.draw.rect(screen, COLORS["black"], scramble_button, border_radius=20)
 	if not scrambling:
-		text("Scramble", scrambleButton.centerx, scrambleButton.centery, font="verdana", size=20)
+		text("Scramble", scramble_button.centerx, scramble_button.centery, font="verdana", size=20)
 	else:
-		text(f"Scrambling... ({scramble_progress}%)", scrambleButton.centerx, scrambleButton.centery, font="verdana", 
+		text(f"Scrambling... ({scramble_progress}%)", scramble_button.centerx, scramble_button.centery, font="verdana", 
 			   size=20, color=(200, 200, 200))
 
 	# --- START SCREEN ------------------------------------------------------------
 	if not started: # Show instructions and title
-		drawPolygonAlpha(screen, (0,0,0, 200), ((0, 0), (SCREEN_WIDTH, 0), 
+		draw_polygon_alpha(screen, (0,0,0, 200), ((0, 0), (SCREEN_WIDTH, 0), 
 						  (SCREEN_WIDTH, SCREEN_HEIGHT), (0, SCREEN_HEIGHT)))
 
 		text("Virtual Cube", SCREEN_WIDTH/2, SCREEN_HEIGHT/2.5, 
@@ -676,7 +682,7 @@ def drawAll(cube, cube_opacity=100):
 		all_alpha = max(all_alpha, 0)
 		all_alpha = min(all_alpha, 200)
 
-		drawPolygonAlpha(screen, (0,0,0, all_alpha), ((0, 0), (SCREEN_WIDTH, 0), 
+		draw_polygon_alpha(screen, (0,0,0, all_alpha), ((0, 0), (SCREEN_WIDTH, 0), 
 						  (SCREEN_WIDTH, SCREEN_HEIGHT), (0, SCREEN_HEIGHT)))
 
 		text("Virtual Cube", SCREEN_WIDTH/2, SCREEN_HEIGHT/2.5, 
@@ -713,20 +719,20 @@ def drawAll(cube, cube_opacity=100):
 	clock.tick(FPS)
 
 
-def glideCubeRot(target_xaxis_rot=0, target_yaxis_rot=0, factor = 0.05):
+def glide_cube_rot(target_xaxis_rot=0, target_yaxis_rot=0, factor = 0.05):
 	global xaxis_rot, yaxis_rot, zaxis_rot
 
 	while abs(xaxis_rot - target_xaxis_rot) > 1 or abs(yaxis_rot - target_yaxis_rot) > 1:
 		xaxis_rot = ((1-factor) * xaxis_rot + factor * target_xaxis_rot) % 360
 		yaxis_rot = ((1-factor) * yaxis_rot + factor * target_yaxis_rot) % 360
 
-		drawAll(rubiks_cube)
+		draw_all(rubiks_cube)
 	
 	xaxis_rot = target_xaxis_rot
 	yaxis_rot = target_yaxis_rot
 
 
-def isCubeSolved():
+def is_cube_solved():
 	red_squares_coords = []
 	orange_squares_coords = []
 	white_squares_coords = []
@@ -811,7 +817,7 @@ def isCubeSolved():
 	return True
 
 
-def alphaLines(surface, color, closed, points):
+def alpha_lines(surface, color, closed, points):
     # Calculate the bounding box of the points
     min_x = min(point[0] for point in points)
     max_x = max(point[0] for point in points)
@@ -885,8 +891,8 @@ def main():
 						started = True
 						mouse_xvel = 0
 
-					if not resetButton.collidepoint(pygame.mouse.get_pos()) and \
-						not scrambleButton.collidepoint(pygame.mouse.get_pos()):
+					if not reset_button.collidepoint(pygame.mouse.get_pos()) and \
+						not scramble_button.collidepoint(pygame.mouse.get_pos()):
 						mouse_dragging = True
 						initial_mouse_pos = pygame.mouse.get_pos()
 					else:
@@ -924,7 +930,7 @@ def main():
 			move = None
 
 			if keys_pressed[pygame.K_f]:
-				closest = closestFace()
+				closest = closest_face()
 				if closest == COLORS["red"]:		move = "F"
 				elif closest == COLORS["white"]:	move = "U"
 				elif closest == COLORS["blue"]:		move = "R"
@@ -933,7 +939,7 @@ def main():
 				elif closest == COLORS["orange"]:	move = "B"
 
 			elif keys_pressed[pygame.K_b]:
-				closest = closestFace()
+				closest = closest_face()
 				if closest == COLORS["red"]:		move = "B"
 				elif closest == COLORS["white"]:	move = "D"
 				elif closest == COLORS["blue"]:		move = "L"
@@ -942,7 +948,7 @@ def main():
 				elif closest == COLORS["orange"]:	move = "F"
 
 			elif keys_pressed[pygame.K_u]:
-				top = topFace()
+				top = top_face()
 				if top == COLORS["white"]:			move = "U"
 				elif top == COLORS["blue"]:			move = "R"
 				elif top == COLORS["green"]:		move = "L"
@@ -951,7 +957,7 @@ def main():
 				elif top == COLORS["red"]:			move = "F"
 
 			elif keys_pressed[pygame.K_d]:
-				top = topFace()
+				top = top_face()
 				if top == COLORS["white"]:			move = "D"
 				elif top == COLORS["blue"]:			move = "L"
 				elif top == COLORS["green"]:		move = "R"
@@ -960,7 +966,7 @@ def main():
 				elif top == COLORS["red"]:			move = "B"
 
 			elif keys_pressed[pygame.K_l]:
-				left = leftFace()
+				left = left_face()
 				if left == COLORS["green"]:			move = "L"
 				elif left == COLORS["white"]:		move = "U"
 				elif left == COLORS["yellow"]:		move = "D"
@@ -969,7 +975,7 @@ def main():
 				elif left == COLORS["red"]:			move = "F"
 			
 			elif keys_pressed[pygame.K_r]:
-				left = leftFace()
+				left = left_face()
 				if left == COLORS["green"]:			move = "R"
 				elif left == COLORS["white"]:		move = "D"
 				elif left == COLORS["yellow"]:		move = "U"
@@ -992,14 +998,14 @@ def main():
 			pre_start_frames += 1
 			mouse_xvel = -9/FPS
 
-		drawAll(rubiks_cube)
+		draw_all(rubiks_cube)
 		
-		if resetButton.collidepoint(pygame.mouse.get_pos()):
+		if reset_button.collidepoint(pygame.mouse.get_pos()):
 			if pygame.mouse.get_pressed()[0] and not mouse_dragging:
 
 				if RESET_TYPE == "FADE":
 					for alpha in reversed(np.linspace(0, 100, RESET_FADE_FRAMES)):
-						drawAll(rubiks_cube, int(alpha))
+						draw_all(rubiks_cube, int(alpha))
 					sleep(RESET_PAUSE_SECONDS)
 				
 				mouse_xvel = 0
@@ -1016,12 +1022,12 @@ def main():
 					zaxis_rot = 0
 
 					for alpha in np.linspace(0, 100, RESET_FADE_FRAMES):
-						drawAll(rubiks_cube, alpha)
+						draw_all(rubiks_cube, alpha)
 				else:
-					glideCubeRot()
+					glide_cube_rot()
 
 
-		if scrambleButton.collidepoint(pygame.mouse.get_pos()):
+		if scramble_button.collidepoint(pygame.mouse.get_pos()):
 			if pygame.mouse.get_pressed()[0] and not mouse_dragging and not scrambling:
 				if not started:
 					started = True
@@ -1035,21 +1041,21 @@ def main():
 		# --- TIMER ---------------------------------------------------------------------------------------------------
 		# Timer starts when cube is scrambled and ends when solved
 		if scrambled and not solved:
-			if isCubeSolved():
+			if is_cube_solved():
 				final_time = (pygame.time.get_ticks() - start_time) / 1000
 				do_glide = True
 				solved = True
 
 		if do_glide:
 			# Glide to target (it looks cool)
-			glideCubeRot(20, 325)
+			glide_cube_rot(20, 325)
 
 			do_glide = False
 
 		# --- ROTATION -------------------------------------------------------------------------------------------------
 		xaxis_rot += mouse_yvel
 
-		if not isCubeUpsideDown():
+		if not is_cube_upside_down():
 			yaxis_rot += mouse_xvel
 		else:
 			yaxis_rot -= mouse_xvel
