@@ -17,7 +17,7 @@ Requires modules pygame and numpy. If they are not already installed, the progra
 
 `config.py` contains the constants needed to run `main.py`. To change any settings of Virutal Cube, you can edit `config.py`'s settings to your desire.
 
-## Instructions  
+## Instructions
 <ul>
   <li>Click and drag with your mouse/touchpad/touchscreen to rotate/look around the cube</li>
   <li>Use the F, B, L, R, U, and D keys to move</li>
@@ -26,6 +26,14 @@ Requires modules pygame and numpy. If they are not already installed, the progra
   <li>To execute a prime move (counterclockwise move), hold shift while moving a face</li>
   <li>Adding support for slice moves (M, E, and S) soon</li>
 </ul>
+
+## Download
+<ol>
+    <li>Download the latest stable version of Python 3.X from https://www.python.org/downloads/ if you haven't already done so. (This was made with Python 3.12.4)</li>
+    <li>Download this repository as a .zip file.</li>
+    <li>Extract the .zip into a folder.</li>
+    <li>Run main.py from the terminal, IDLE, or any other IDE/text editor that supports Python.</li>
+</ol>
 
 ## How does it work?
 
