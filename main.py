@@ -1,4 +1,8 @@
 
+#!/usr/bin/env python3
+
+
+
 #
 #
 #   
@@ -8,21 +12,20 @@
 #    \ \__|  \ \_\\ \_\ \_\ \ \_\ \ \_____\\ \_\ \_\\ \_____\    \ \_____\\ \_____\\ \_____\\ \_____\ 
 #     \/_/    \/_/ \/_/ /_/  \/_/  \/_____/ \/_/\/_/ \/_____/     \/_____/ \/_____/ \/_____/ \/_____/ 
 #
-#    main.py
+# 	main.py
 #
-#    Anish Gupta
-#    July 2024
-#    https://github.com/neur0n-7/VirtualCube
+#	Anish Gupta
+#	July 2024
+#	https://github.com/neur0n-7/VirtualCube
 #
 #
 
 
-# --- IMPORTS ------------------------------------------------------------------------------------------------
+# --- IMPORTS -------------------------------------------------------------------------------------------------
 from os import system, environ, path
 from random import choice, randint
 from time import sleep
 import sys
-
 
 # Install pygame and numpy if they aren't already installed
 try:
@@ -45,8 +48,12 @@ except (ModuleNotFoundError, ImportError):
 	import numpy as np
 	print("numpy module installed.")
 
-# --- CONSTANTS ------------------------------------------------------------------------------------------------
 from config import *
+
+
+
+# --- CONSTANTS ------------------------------------------------------------------------------------------------
+
 
 ALL_MOVES = ["U", "U'", "D", "D'", "F", "F'", "B", "B'", "L", "L'", "R", "R'"] # MES excluded
 
