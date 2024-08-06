@@ -1,19 +1,28 @@
 
-"""
+#
+#
+#   
+#    __   __ __   ______  ______  __  __   ______   __           ______   __  __   ______   ______    
+#   /\ \ / //\ \ /\  == \/\__  _\/\ \/\ \ /\  __ \ /\ \         /\  ___\ /\ \/\ \ /\  == \ /\  ___\   
+#   \ \ \'/ \ \ \\ \  __<\/_/\ \/\ \ \_\ \\ \  __ \\ \ \____    \ \ \____\ \ \_\ \\ \  __< \ \  __\   
+#    \ \__|  \ \_\\ \_\ \_\ \ \_\ \ \_____\\ \_\ \_\\ \_____\    \ \_____\\ \_____\\ \_____\\ \_____\ 
+#     \/_/    \/_/ \/_/ /_/  \/_/  \/_____/ \/_/\/_/ \/_____/     \/_____/ \/_____/ \/_____/ \/_____/ 
+#
+# 	main.py
+#
+#	Anish Gupta
+#	July 2024
+#	https://github.com/neur0n-7/VirtualCube
+#
+#
 
-Virtual Rubik's Cube
-
-Anish Gupta
-(neur0n-7 on Github)
-July 2024
-
-"""
 
 # --- IMPORTS -------------------------------------------------------------------------------------------------
 from os import system, environ, path
 from random import choice, randint
 from time import sleep
 import sys
+
 
 # Install pygame and numpy if they aren't already installed
 try:
@@ -543,10 +552,9 @@ def turn(move):
 
 		draw_all(rubiks_cube)
 		
-		for event in pygame.event.get():
-			if event.type == pygame.QUIT:
-				pygame.quit()
-				sys.exit()
+		if pygame.event.peek(pygame.QUIT):
+			pygame.quit()
+			sys.exit()
 
 	pygame.event.set_allowed([pygame.QUIT, pygame.MOUSEBUTTONDOWN, pygame.MOUSEBUTTONUP])
 
@@ -895,25 +903,26 @@ def main():
 
 	while running:
 		pygame.display.set_caption(f"Virtual Cube")
-		for event in pygame.event.get():
-			if event.type == pygame.QUIT:
-				running = False
-			elif event.type == pygame.MOUSEBUTTONDOWN:
-				if event.button == 1:
-					if not started:
-						started = True
-						mouse_xvel = 0
 
-					if not reset_button.collidepoint(pygame.mouse.get_pos()) and \
-						not scramble_button.collidepoint(pygame.mouse.get_pos()):
-						mouse_dragging = True
-						initial_mouse_pos = pygame.mouse.get_pos()
-					else:
-						mouse_dragging = False
+		if pygame.event.peek(pygame.QUIT):
+			running = False
+		elif pygame.event.peek(pygame.MOUSEBUTTONDOWN):
+			event = pygame.event.get(pygame.MOUSEBUTTONDOWN)[0]
+			if event.button == 1:
+				if not started:
+					started = True
+					mouse_xvel = 0
 
-			elif event.type == pygame.MOUSEBUTTONUP:
-				if event.button == 1:
+				if not reset_button.collidepoint(pygame.mouse.get_pos()) and \
+					not scramble_button.collidepoint(pygame.mouse.get_pos()):
+					mouse_dragging = True
+					initial_mouse_pos = pygame.mouse.get_pos()
+				else:
 					mouse_dragging = False
+		elif pygame.event.peek(pygame.MOUSEBUTTONUP):
+			event = pygame.event.get(pygame.MOUSEBUTTONUP)[0]
+			if event.button == 1:
+				mouse_dragging = False
 
 			keys_pressed = pygame.key.get_pressed()
 			keys = [pygame.K_f, pygame.K_b, pygame.K_l, pygame.K_r, pygame.K_u, pygame.K_d]
