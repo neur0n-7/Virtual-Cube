@@ -333,18 +333,24 @@ def rotated_point(x, y, z, xdegrees=0, ydegrees=0, zdegrees=0, center=(150,150,1
 
 
 def scramble():
-	global scramble_progress, cube_turn_speed
+	global scramble_progress, cube_turn_speed, scrambled, scrambling, solved
 
 	cube_turn_speed = SCRAMBLE_CUBE_TURN_SPEED
 
 	scramble_progress = 0
 	times = randint(*SCRAMBLE_RANGE)
+	scrambled = False
 
+	scrambling = True
+				
 	for i in range(times):
 
 		turn(choice(ALL_MOVES))
 		scramble_progress = round((i+1)/times*100, 1)
-		
+	
+	scrambling = False
+	scrambled = True
+	solved = False	
 
 	scramble_progress = 100
 	cube_turn_speed = NORMAL_CUBE_TURN_SPEED
@@ -521,6 +527,8 @@ def turn(move):
 	# Loop rotation and draw
 	times = int(90/cube_turn_speed)
 
+	pygame.event.set_allowed([pygame.QUIT])
+
 	for _ in range(times):
 		for index, square in enumerate(squares_to_rotate):
 			rotated_square = []
@@ -534,11 +542,13 @@ def turn(move):
 			squares_to_rotate[index] = rotated_square
 
 		draw_all(rubiks_cube)
+		
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
 				pygame.quit()
 				sys.exit()
 
+	pygame.event.set_allowed([pygame.QUIT, pygame.MOUSEBUTTONDOWN, pygame.MOUSEBUTTONUP])
 
 	to_add_keys = []
 	to_remove_keys = []
@@ -851,6 +861,9 @@ def main():
 	# Next line triggers NSApplicationDelegate's warning for some reason on Mac
 	screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
+	pygame.event.set_allowed([pygame.QUIT, pygame.MOUSEBUTTONDOWN, pygame.MOUSEBUTTONUP])
+
+
 	running = True
 
 	xaxis_rot = 0
@@ -1031,11 +1044,7 @@ def main():
 			if pygame.mouse.get_pressed()[0] and not mouse_dragging and not scrambling:
 				if not started:
 					started = True
-				scrambling = True
 				scramble()
-				scrambling = False
-				scrambled = True
-				solved = False
 				start_time = pygame.time.get_ticks()
 		
 		# --- TIMER ---------------------------------------------------------------------------------------------------
