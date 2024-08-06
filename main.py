@@ -8,11 +8,11 @@
 #    \ \__|  \ \_\\ \_\ \_\ \ \_\ \ \_____\\ \_\ \_\\ \_____\    \ \_____\\ \_____\\ \_____\\ \_____\ 
 #     \/_/    \/_/ \/_/ /_/  \/_/  \/_____/ \/_/\/_/ \/_____/     \/_____/ \/_____/ \/_____/ \/_____/ 
 #
-# 	main.py
+#    main.py
 #
-#	Anish Gupta
-#	July 2024
-#	https://github.com/neur0n-7/VirtualCube
+#    Anish Gupta
+#    July 2024
+#    https://github.com/neur0n-7/VirtualCube
 #
 #
 
