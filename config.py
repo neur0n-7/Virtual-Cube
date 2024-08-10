@@ -48,7 +48,7 @@ COLORS  = {
 
 # CUBE SETTINGS
 SPIN_FACTOR = 0.9 # Higher = faster and vice versa, between 0 and 1
-NORMAL_CUBE_TURN_SPEED = 6.42857 # Should be a divisor of 90 (or very close to it)
+NORMAL_CUBE_TURN_SPEED = 10 # Should be a divisor of 90 (or very close to it)
 SCRAMBLE_CUBE_TURN_SPEED = 15 # Should be a divisor of 90 (or very close to it)
 SCRAMBLE_RANGE = (20, 30) # Min and max number of times to scramble
 DRAW_INTERIOR = True # Whether or not to draw the interior of the cube
@@ -66,8 +66,6 @@ if RESET_TYPE == "FADE":
 	RESET_FADE_SECONDS = 0.25 # How long to fade out
 	RESET_FADE_FRAMES = int(RESET_FADE_SECONDS*FPS)
 	RESET_PAUSE_SECONDS = 0.25 # How long to pause after fading out before fading in again
-
-
 
 SHOW_FPS = True
 
