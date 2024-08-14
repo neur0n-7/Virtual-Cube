@@ -47,8 +47,12 @@ except (ModuleNotFoundError, ImportError):
 	import numpy as np
 	print("numpy module installed.")
 
-from config import *
-
+try:
+	from config import *
+except (ModuleNotFoundError, ImportError):
+	print("The config.py file is missing!")
+	print("You can find it at https://github.com/neur0n-7/VirtualCube/blob/main/config.py.")
+	sys.exit()
 
 
 # --- CONSTANTS ------------------------------------------------------------------------------------------------
