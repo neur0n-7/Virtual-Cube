@@ -49,9 +49,7 @@ $$ \text{projected x} = \frac{\text{focal length }(\text{vertex x} - \text{camer
   
 $$ \text{projected y} = \frac{\text{focal length }(\text{vertex y} - \text{camera y})}{\text{focal length} + \text{vertex z}} + \text{camera y} $$  
 
-All projections are calculated AFTER rotation (below).
-
-To rotate the cube/faces, this formula is used, given the x, y, and z coordinate of a single point:  
+To rotate, I used rotation matrices instead of quaternions:
 
 $$
 \begin{bmatrix}
@@ -85,16 +83,13 @@ r_x & r_y & r_z
 \end{bmatrix}
 $$
 
-where $θ_x$, $θ_y$, and $θ_z$ represent the rotation in degrees, and $r_x$, $r_y$, and $r_z$ represent the x, y, and z coordinates of the center of rotation. This works by translating each vertex so that the center of rotation is on the origin, multiplying by all 3 rotation matrices, and then translating the vertex back. This formula rotates (x, y, z) around ($r_x$, $r_y$, $r_z$). If you imagine that ($r_x$, $r_y$, $r_z$) has its own local coordinate system with its own x, y, and z axes, we are rotating by $r_x$ degrees around the x-axis of the local coordinate system, $r_y$ around the y-axis, and $r_z$ around the z axis. 
+where $θ_x$, $θ_y$, and $θ_z$ represent the rotation in degrees, and $r_x$, $r_y$, and $r_z$ represent the x, y, and z coordinates of the center of rotation.  
 
 The rubik's cube is represented as 54 squares, each corresponding to a color on the rubik's cube. To draw the cube, the rotation from looking around the cube is applied to each square and saved. Each square is sorted by its average Z coordinate, and then drawn from farthest to closest. Lines are drawn around the square to clearly define borders.  
 
-Turning the faces of the cube is slightly simpler. There are 26 cubelets on the cube (excluding the middle one), and each cubelet is linked to its corresponding squares. When rotating a face, the program selects which cubelets to rotate, which is used to determine which squares to rotate. The selected squares are rotated
-a certain number of times around the middle of the face by a certain number of degrees such that the number of degrees per turn times the number of turns is equal to 90. The squares are rounded to the nearest integer, and the cubelets are also rotated and rounded in one go by 90 degrees.  
-
-Before turning the face, 2 additional squares are added to the rubik's cube that are removed after the turn is complete. These squares are the inside of the rubik's cube and exist purely for visual reasons. They are not added to the cubelets.
-
 *The code for executing a turn is located in `turn()` in `main.py`. The code for drawing the cube, along with other things like the start screen, FPS, and buttons, is located in `drawAll()`.*
+
+Side note: Yes the `cubelets` code is far longer than it needs to be but again I'm too lazy to fix it 💀
 
 ## Report Issues  
 If you encounter an issue with Virtual Cube, open an issue on Github.  
