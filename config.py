@@ -48,7 +48,7 @@ COLORS  = {
 
 # CUBE SETTINGS
 SPIN_FACTOR = 0.9 # Higher = faster and vice versa, between 0 and 1
-NORMAL_CUBE_TURN_SPEED = 10 # Should be a divisor of 90 (or very close to it)
+NORMAL_CUBE_TURN_SPEED = 7.5 # Should be a divisor of 90 (or very close to it)
 SCRAMBLE_CUBE_TURN_SPEED = 15 # Should be a divisor of 90 (or very close to it)
 SCRAMBLE_RANGE = (20, 30) # Min and max number of times to scramble
 DRAW_INTERIOR = True # Whether or not to draw the interior of the cube
