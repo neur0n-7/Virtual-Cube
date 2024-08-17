@@ -47,12 +47,8 @@ except (ModuleNotFoundError, ImportError):
 	import numpy as np
 	print("numpy module installed.")
 
-try:
-	from config import *
-except (ModuleNotFoundError, ImportError):
-	print("The config.py file is missing!")
-	print("You can find it at https://github.com/neur0n-7/VirtualCube/blob/main/config.py.")
-	sys.exit()
+from config import *
+
 
 
 # --- CONSTANTS ------------------------------------------------------------------------------------------------
@@ -352,7 +348,10 @@ def rotated_point(x, y, z, xdegrees=0, ydegrees=0, zdegrees=0, center=(150,150,1
 
 
 def scramble():
-	global scramble_progress, cube_turn_speed, scrambled, scrambling, solved
+	global scramble_progress, cube_turn_speed, scrambled, scrambling, solved, mouse_xvel, mouse_yvel
+
+	mouse_xvel = 0
+	mouse_yvel = 0
 
 	cube_turn_speed = SCRAMBLE_CUBE_TURN_SPEED
 
@@ -628,7 +627,7 @@ def turn(move):
 
 
 def draw_all(cube, cube_opacity=100):
-	global average_zs, rotated_cube, pre_start_frames, post_start_frames
+	global average_dists, rotated_cube, pre_start_frames, post_start_frames
 
 	# --- RUBIK'S CUBE ------------------------------------------------------------
 	# Rotate the rubiks cube
@@ -643,16 +642,23 @@ def draw_all(cube, cube_opacity=100):
 		rotated_cube[tuple(temp)] = color
 
 	# Create list like [(((x, y, z),(x, y, z)), average z), (((x, y, z),(x, y, z)), average z)] from rotated_cube
-	average_zs = []
+	average_dists = []
 	for vertices in rotated_cube.keys():
-		average_zs.append((vertices, sum([vertex[2] for vertex in vertices]) / len(vertices)))
+		average_x = sum([vertex[0] for vertex in vertices]) / len(vertices)
+		average_y = sum([vertex[1] for vertex in vertices]) / len(vertices)
+		average_z = sum([vertex[2] for vertex in vertices]) / len(vertices)
+
+		dist = ((CAMERA_X-average_x)**2 + (CAMERA_Y-average_y)**2 + (-FOCAL_LENGTH-average_z)**2)**0.5
+
+
+		average_dists.append((vertices, dist))
 
 	# Sort average_zs by average z
-	average_zs.sort(key=lambda x: x[1], reverse=True)
+	average_dists.sort(key=lambda x: x[1], reverse=True)
 
 	# Draw the rotated cube	
 	screen.fill(COLORS["background"])
-	for vertices, _ in average_zs:
+	for vertices, _ in average_dists:
 		color_to_draw = rotated_cube[vertices]
 		real_projections = []
 		for vertex in vertices:
@@ -869,7 +875,8 @@ def alpha_lines(surface, color, closed, points):
 # --- MAIN -----------------------------------------------------------------------------------------------------
 def main():
 	global screen, rotated_cube, xaxis_rot, yaxis_rot, zaxis_rot, pre_start_frames, post_start_frames, \
-		scrambling, started, rubiks_cube, cubelets, clock, scrambled, solved, start_time, final_time
+		scrambling, started, rubiks_cube, cubelets, clock, scrambled, solved, start_time, final_time, \
+		mouse_xvel, mouse_yvel
 
 	pygame.init()
 	clock = pygame.time.Clock()
