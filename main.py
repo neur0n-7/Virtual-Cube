@@ -1,6 +1,4 @@
 
-#!/usr/bin/env python3
-
 
 #
 #
@@ -28,13 +26,13 @@ import sys
 
 # Install pygame and numpy if they aren't already installed
 try:
-	environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide" # hide pygame support prompt
+	environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 	import pygame
 	import pygame.gfxdraw
 except (ModuleNotFoundError, ImportError):
 	print("pygame module not found. Installing now...")
 	system("pip install pygame==2.6.0 -q -q") # -q -q to only show errors and criticals
-	environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide" # hide pygame support prompt
+	environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 	import pygame
 	import pygame.gfxdraw
 	print("pygame module installed.")
@@ -436,23 +434,23 @@ def turn(move):
 	move: str = move # type hinting
 	backwards_rot = False # rotate around axis by negative amount?
 
-	offset_amount = 0.001
+	offset_amount = 0.01
 
 	if move.startswith("U"):
 		to_match = ("y", 5)
 		backwards_rot = True
-		offset_amount = -0.001
+		offset_amount = -0.01
 	elif move.startswith("D"):
 		to_match = ("y", 1)
 	elif move.startswith("F"):
 		to_match = ("z", 1)
-		offset_amount = -0.001
+		offset_amount = -0.01
 	elif move.startswith("B"):
 		to_match = ("z", 5)
 		backwards_rot = True
 	elif move.startswith("L"):
 		to_match = ("x", 1)
-		offset_amount = -0.001
+		offset_amount = -0.01
 	elif move.startswith("R"):
 		to_match = ("x", 5)
 		backwards_rot = True
