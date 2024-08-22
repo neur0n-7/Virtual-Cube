@@ -13,7 +13,7 @@
 > You can download it [here](https://www.python.org/downloads/).  
 > If you are still unable to run it, try specfically downloading version 3.12.4.
 
-Requires modules pygame and numpy. If they are not already installed, the program will install them on your system with `os.system()`.  
+Requires modules pygame and numpy. If they are not installed, the program will install them on your system with `os.system()`.  
 
 `config.py` contains the constants needed to run `main.py`. To change any settings of Virutal Cube, you can edit `config.py`'s settings to your desire.
 
@@ -24,7 +24,6 @@ Requires modules pygame and numpy. If they are not already installed, the progra
   <li>F = Front, B = Back, L = Left, R = Right, U = Up, D = Down</li>
   <li>Each move is clockwise when looking directly at the face you are turning</li>
   <li>To execute a prime move (counterclockwise move), hold shift while moving a face</li>
-  <li>Adding support for slice moves (M, E, and S) soon</li>
 </ul>
 
 ## Download
@@ -37,7 +36,9 @@ Requires modules pygame and numpy. If they are not already installed, the progra
 
 ## How does it work?
 
-Virtual Cube uses raycasting to generate a 2D projection of the 3D rubik's cube.
+*This section might not render properly on some devices.*  
+
+Virtual Cube uses raycasting to generate a 2D projection of the 3D Rubik's cube. 
 
 [Rotation matrices source](https://en.wikipedia.org/wiki/Rotation_matrix#In_three_dimensions)  
 [Raycasting source](https://en.wikipedia.org/wiki/Ray_casting)  
