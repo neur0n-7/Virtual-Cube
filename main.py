@@ -47,7 +47,7 @@ except (ModuleNotFoundError, ImportError):
 
 try:
 	from config import *
-else (ModuleNotFoundError, ImportError):
+except (ModuleNotFoundError, ImportError):
 	print("Your config.py file is missing! Make sure you've downloaded the config file and placed it in the same folder as this file (main.py).")
 
 
