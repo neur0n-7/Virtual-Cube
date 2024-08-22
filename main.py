@@ -45,7 +45,10 @@ except (ModuleNotFoundError, ImportError):
 	import numpy as np
 	print("numpy module installed.")
 
-from config import *
+try:
+	from config import *
+else (ModuleNotFoundError, ImportError):
+	print("Your config.py file is missing! Make sure you've downloaded the config file and placed it in the same folder as this file (main.py).")
 
 
 
