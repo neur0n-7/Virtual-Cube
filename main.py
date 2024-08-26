@@ -45,16 +45,11 @@ except (ModuleNotFoundError, ImportError):
 	import numpy as np
 	print("numpy module installed.")
 
-try:
-	from config import *
-except (ModuleNotFoundError, ImportError):
-	print("Your config.py file is missing! Make sure you've downloaded the config file and placed it in the same folder as this file (main.py).")
+from config import *
 
 
 
 # --- CONSTANTS ------------------------------------------------------------------------------------------------
-
-
 ALL_MOVES = ["U", "U'", "D", "D'", "F", "F'", "B", "B'", "L", "L'", "R", "R'"] # MES excluded
 
 # To be scaled up by 50x for 3D coordinates of each square
@@ -534,7 +529,7 @@ def turn(move):
 				x += offset_amount
 			elif match_index == 1:
 				y += offset_amount
-			elif match_index ==2:
+			elif match_index == 2:
 				z += offset_amount
 
 			offset_square.append((x, y, z))
@@ -642,17 +637,24 @@ def draw_all(cube, cube_opacity=100):
 			
 		rotated_cube[tuple(temp)] = color
 
-	# Create list like [(((x, y, z),(x, y, z)), average z), (((x, y, z),(x, y, z)), average z)] from rotated_cube
+	# Create list like [(((x, y, z),(x, y, z)), average distance), (((x, y, z),(x, y, z)), average distance), ...] from rotated_cube
 	average_dists = []
-	for vertices in rotated_cube.keys():
-		average_x = sum([vertex[0] for vertex in vertices]) / len(vertices)
-		average_y = sum([vertex[1] for vertex in vertices]) / len(vertices)
-		average_z = sum([vertex[2] for vertex in vertices]) / len(vertices)
 
-		dist = ((CAMERA_X-average_x)**2 + (CAMERA_Y-average_y)**2 + (-FOCAL_LENGTH-average_z)**2)**0.5
+	if AVERAGE_DIST_SORTING:
+		for vertices in rotated_cube.keys():
+			average_x = sum([vertex[0] for vertex in vertices]) / len(vertices)
+			average_y = sum([vertex[1] for vertex in vertices]) / len(vertices)
+			average_z = sum([vertex[2] for vertex in vertices]) / len(vertices)
+
+			dist = ((CAMERA_X-average_x)**2 + (CAMERA_Y-average_y)**2 + (-FOCAL_LENGTH-average_z)**2)**0.5
 
 
-		average_dists.append((vertices, dist))
+			average_dists.append((vertices, dist))
+	else:
+		for vertices in rotated_cube.keys():
+			average_z = sum([vertex[2] for vertex in vertices]) / len(vertices)
+			average_dists.append((vertices, average_z))
+	
 
 	# Sort average_zs by average z
 	average_dists.sort(key=lambda x: x[1], reverse=True)
@@ -674,16 +676,16 @@ def draw_all(cube, cube_opacity=100):
 
 
 	# --- RESET BUTTON ------------------------------------------------------------
-	pygame.draw.rect(screen, COLORS["black"], reset_button, border_radius=20)
-	text("Reset", reset_button.centerx, reset_button.centery, font="verdana", size=20)
+	pygame.draw.rect(screen, COLORS["button_bg"], reset_button, border_radius=20)
+	text("Reset", reset_button.centerx, reset_button.centery, font="verdana", size=20, color=COLORS["button_fg"])
 
 	# --- SCRAMBLE BUTTON ------------------------------------------------------------
-	pygame.draw.rect(screen, COLORS["black"], scramble_button, border_radius=20)
+	pygame.draw.rect(screen, COLORS["button_bg"], scramble_button, border_radius=20)
 	if not scrambling:
-		text("Scramble", scramble_button.centerx, scramble_button.centery, font="verdana", size=20)
+		text("Scramble", scramble_button.centerx, scramble_button.centery, font="verdana", size=20, color=COLORS["button_fg"])
 	else:
 		text(f"Scrambling... ({scramble_progress}%)", scramble_button.centerx, scramble_button.centery, font="verdana", 
-			   size=20, color=(200, 200, 200))
+			   size=20, color=COLORS["scrambling"])
 
 	# --- START SCREEN ------------------------------------------------------------
 	if not started: # Show instructions and title
@@ -728,25 +730,25 @@ def draw_all(cube, cube_opacity=100):
 		
 		# Write FPS
 		
-		if SHOW_FPS:	text(f"FPS: {int(clock.get_fps())}", 20, 20, font="verdana", size=18, color=(0, 0, 0), alpha=200-all_alpha, centered=False)
+		if SHOW_FPS:	text(f"FPS: {int(clock.get_fps())}", 20, 20, font="verdana", size=18, color=COLORS["fps"], alpha=200-all_alpha, centered=False)
 
 		post_start_frames += 1
 
 	else:
 		# Write FPS
-		if SHOW_FPS:	text(f"FPS: {int(clock.get_fps())}", 20, 20, font="verdana", size=18, color=(0, 0, 0), centered=False)
+		if SHOW_FPS:	text(f"FPS: {int(clock.get_fps())}", 20, 20, font="verdana", size=18, color=COLORS["fps"], centered=False)
 
 	# --- TIME ------------------------------------------------------------
 	if scrambled and not solved:
 		time_passed = (pygame.time.get_ticks() - start_time) / 1000
 		minutes = int(time_passed // 60)
 		seconds = time_passed - minutes * 60
-		text(f"{minutes:02}:{seconds:0>5.2f}", SCREEN_WIDTH/2, 40, font="verdana", size=30, color=(0, 0, 0))
+		text(f"{minutes:02}:{seconds:0>5.2f}", SCREEN_WIDTH/2, 40, font="verdana", size=30, color=COLORS["time"])
 
 	if scrambled and solved:
 		minutes = int(final_time // 60)
 		seconds = final_time - minutes * 60
-		text(f"SOLVED IN {minutes:02}:{seconds:0>5.2f}", SCREEN_WIDTH/2, 40, font="verdana", size=30, color=(0, 0, 0))
+		text(f"SOLVED IN {minutes:02}:{seconds:0>5.2f}", SCREEN_WIDTH/2, 40, font="verdana", size=30, color=COLORS["time"])
 
 	# Flip display
 	pygame.display.flip()
