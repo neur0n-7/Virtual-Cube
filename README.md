@@ -1,9 +1,11 @@
 
 <div align="center">
     <h1>Virtual Cube</h1>
-    <p><strong>A virtual 3D Rubik's Cube using pygame without any external 3D engine.</strong></p>
-
-
+    <p><strong>Customizable virtual 3D Rubik's Cube using pygame without any external 3D engine</strong></p>
+    <br>
+    
+![image](https://github.com/user-attachments/assets/0fb52a9d-1c9e-44c4-99bd-c9e0cf2d33d9)
+<br><br>
 ![image](https://github.com/user-attachments/assets/8eb2a847-7a48-48b1-9dea-5e6f74b70cba)
 </div>
 <hr>  
