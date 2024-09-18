@@ -36,6 +36,8 @@ Requires modules pygame and numpy. If they are not installed, the program will i
     <li>Run main.py from the terminal, IDLE, or any other IDE/text editor that supports Python.</li>
 </ol>
 
+Alternatively, if you have `git` installed, run `git clone https://github.com/neur0n-7/Virtual-Cube.git` to directly download the contents of this repository.
+
 ## Report Issues  
 If you happen to have an issue with Virtual Cube, please open an issue on GitHub.  
 If you are unsure on how to open an issue, see [this link](https://docs.github.com/en/issues/tracking-your-work-with-issues/quickstart).
