@@ -24,28 +24,40 @@ from random import choice, randint
 from time import sleep
 import sys
 
-# Install pygame and numpy if they aren't already installed
+# Import numpy and pygame
 try:
 	environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 	import pygame
 	import pygame.gfxdraw
 except (ModuleNotFoundError, ImportError):
-	print("pygame module not found. Installing now...")
-	system("pip install pygame==2.6.0 -q -q") # -q -q to only show errors and criticals
-	environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
-	import pygame
-	import pygame.gfxdraw
-	print("pygame module installed.")
+	print("Missing required package pygame. Install now?")
+	if input("> ").upper().startswith("Y"):
+		print("Installing pygame...")
+		system("pip install pygame==2.6.0") # -q -q to only show errors and criticals
+		print("pygame module installed.")
+		environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
+		import pygame
+		import pygame.gfxdraw
 
 try:
 	import numpy as np
 except (ModuleNotFoundError, ImportError):
-	print("numpy module not found. Installing now...")
-	system("pip install numpy==1.26.4 -q -q") # -q -q to only show errors and criticals
-	import numpy as np
-	print("numpy module installed.")
+	print("Missing required package numpy. Install now?")
+	if input("> ").upper().startswith("Y"):
+		print("Installing numpy...")
+		system("pip install numpy==1.26.4")
+		print("numpy module installed.")
+		import numpy as np
+	else:
+		quit("Exiting... (MissingRequiredModule)")
 
-from config import *
+# Import Virtual Cube configuration settings
+try:
+	import config
+except (ModuleNotFoundError, ImportError):
+	print("The config.py file is missing. Make sure that it has been placed in the same folder as main.py.")
+	print("Download the config file at https://github.com/neur0n-7/Virtual-Cube/blob/main/config.py.")
+	quit("Exiting...")
 
 
 
@@ -55,109 +67,109 @@ ALL_MOVES = ["U", "U'", "D", "D'", "F", "F'", "B", "B'", "L", "L'", "R", "R'"] #
 # To be scaled up by 50x for 3D coordinates of each square
 SOLVED_CUBE = {
 	# Top layer on front (red)
-	((0, 4, 0), (2, 4, 0), (2, 6, 0), (0, 6, 0)): COLORS["red"],
-	((2, 4, 0), (4, 4, 0), (4, 6, 0), (2, 6, 0)): COLORS["red"],
-	((4, 4, 0), (6, 4, 0), (6, 6, 0), (4, 6, 0)): COLORS["red"],
+	((0, 4, 0), (2, 4, 0), (2, 6, 0), (0, 6, 0)): config.COLORS["red"],
+	((2, 4, 0), (4, 4, 0), (4, 6, 0), (2, 6, 0)): config.COLORS["red"],
+	((4, 4, 0), (6, 4, 0), (6, 6, 0), (4, 6, 0)): config.COLORS["red"],
 	
 	# Middle layer on front (red)
-	((0, 2, 0), (2, 2, 0), (2, 4, 0), (0, 4, 0)): COLORS["red"],
-	((2, 2, 0), (4, 2, 0), (4, 4, 0), (2, 4, 0)): COLORS["red"],
-	((4, 2, 0), (6, 2, 0), (6, 4, 0), (4, 4, 0)): COLORS["red"],
+	((0, 2, 0), (2, 2, 0), (2, 4, 0), (0, 4, 0)): config.COLORS["red"],
+	((2, 2, 0), (4, 2, 0), (4, 4, 0), (2, 4, 0)): config.COLORS["red"],
+	((4, 2, 0), (6, 2, 0), (6, 4, 0), (4, 4, 0)): config.COLORS["red"],
 	
 	# Bottom layer on front (red)
-	((0, 0, 0), (2, 0, 0), (2, 2, 0), (0, 2, 0)): COLORS["red"],
-	((2, 0, 0), (4, 0, 0), (4, 2, 0), (2, 2, 0)): COLORS["red"],
-	((4, 0, 0), (6, 0, 0), (6, 2, 0), (4, 2, 0)): COLORS["red"],
+	((0, 0, 0), (2, 0, 0), (2, 2, 0), (0, 2, 0)): config.COLORS["red"],
+	((2, 0, 0), (4, 0, 0), (4, 2, 0), (2, 2, 0)): config.COLORS["red"],
+	((4, 0, 0), (6, 0, 0), (6, 2, 0), (4, 2, 0)): config.COLORS["red"],
 
 	# Closest layer on top (white)
-	((0, 6, 0), (2, 6, 0), (2, 6, 2), (0, 6, 2)): COLORS["white"],
-	((2, 6, 0), (4, 6, 0), (4, 6, 2), (2, 6, 2)): COLORS["white"],
-	((4, 6, 0), (6, 6, 0), (6, 6, 2), (4, 6, 2)): COLORS["white"],
+	((0, 6, 0), (2, 6, 0), (2, 6, 2), (0, 6, 2)): config.COLORS["white"],
+	((2, 6, 0), (4, 6, 0), (4, 6, 2), (2, 6, 2)): config.COLORS["white"],
+	((4, 6, 0), (6, 6, 0), (6, 6, 2), (4, 6, 2)): config.COLORS["white"],
 	
 	# Middle layer on top (white)
-	((0, 6, 2), (2, 6, 2), (2, 6, 4), (0, 6, 4)): COLORS["white"],
-	((2, 6, 2), (4, 6, 2), (4, 6, 4), (2, 6, 4)): COLORS["white"],
-	((4, 6, 2), (6, 6, 2), (6, 6, 4), (4, 6, 4)): COLORS["white"],
+	((0, 6, 2), (2, 6, 2), (2, 6, 4), (0, 6, 4)): config.COLORS["white"],
+	((2, 6, 2), (4, 6, 2), (4, 6, 4), (2, 6, 4)): config.COLORS["white"],
+	((4, 6, 2), (6, 6, 2), (6, 6, 4), (4, 6, 4)): config.COLORS["white"],
 
 	# Farthest layer on top (white)
-	((0, 6, 4), (2, 6, 4), (2, 6, 6), (0, 6, 6)): COLORS["white"],
-	((2, 6, 4), (4, 6, 4), (4, 6, 6), (2, 6, 6)): COLORS["white"],
-	((4, 6, 4), (6, 6, 4), (6, 6, 6), (4, 6, 6)): COLORS["white"],
+	((0, 6, 4), (2, 6, 4), (2, 6, 6), (0, 6, 6)): config.COLORS["white"],
+	((2, 6, 4), (4, 6, 4), (4, 6, 6), (2, 6, 6)): config.COLORS["white"],
+	((4, 6, 4), (6, 6, 4), (6, 6, 6), (4, 6, 6)): config.COLORS["white"],
 
 	# Top layer on right side (blue)
-	((6, 4, 2), (6, 6, 2), (6, 6, 0), (6, 4, 0)): COLORS["blue"],
-	((6, 4, 4), (6, 6, 4), (6, 6, 2), (6, 4, 2)): COLORS["blue"],
-	((6, 4, 6), (6, 6, 6), (6, 6, 4), (6, 4, 4)): COLORS["blue"],
+	((6, 4, 2), (6, 6, 2), (6, 6, 0), (6, 4, 0)): config.COLORS["blue"],
+	((6, 4, 4), (6, 6, 4), (6, 6, 2), (6, 4, 2)): config.COLORS["blue"],
+	((6, 4, 6), (6, 6, 6), (6, 6, 4), (6, 4, 4)): config.COLORS["blue"],
 
 	# Middle layer on right side (blue)
-	((6, 2, 2), (6, 4, 2), (6, 4, 0), (6, 2, 0)): COLORS["blue"],
-	((6, 2, 4), (6, 4, 4), (6, 4, 2), (6, 2, 2)): COLORS["blue"],
-	((6, 2, 6), (6, 4, 6), (6, 4, 4), (6, 2, 4)): COLORS["blue"],
+	((6, 2, 2), (6, 4, 2), (6, 4, 0), (6, 2, 0)): config.COLORS["blue"],
+	((6, 2, 4), (6, 4, 4), (6, 4, 2), (6, 2, 2)): config.COLORS["blue"],
+	((6, 2, 6), (6, 4, 6), (6, 4, 4), (6, 2, 4)): config.COLORS["blue"],
 
 	# Bottom layer on right side (blue)
-	((6, 0, 2), (6, 2, 2), (6, 2, 0), (6, 0, 0)): COLORS["blue"],
-	((6, 0, 4), (6, 2, 4), (6, 2, 2), (6, 0, 2)): COLORS["blue"],
-	((6, 0, 6), (6, 2, 6), (6, 2, 4), (6, 0, 4)): COLORS["blue"],
+	((6, 0, 2), (6, 2, 2), (6, 2, 0), (6, 0, 0)): config.COLORS["blue"],
+	((6, 0, 4), (6, 2, 4), (6, 2, 2), (6, 0, 2)): config.COLORS["blue"],
+	((6, 0, 6), (6, 2, 6), (6, 2, 4), (6, 0, 4)): config.COLORS["blue"],
 
 	# Top layer on left side (green)
-	((0, 4, 6), (0, 6, 6), (0, 6, 4), (0, 4, 4)): COLORS["green"],
-	((0, 4, 4), (0, 6, 4), (0, 6, 2), (0, 4, 2)): COLORS["green"],
-	((0, 4, 2), (0, 6, 2), (0, 6, 0), (0, 4, 0)): COLORS["green"],
+	((0, 4, 6), (0, 6, 6), (0, 6, 4), (0, 4, 4)): config.COLORS["green"],
+	((0, 4, 4), (0, 6, 4), (0, 6, 2), (0, 4, 2)): config.COLORS["green"],
+	((0, 4, 2), (0, 6, 2), (0, 6, 0), (0, 4, 0)): config.COLORS["green"],
 
 	# Middle layer on left side (green)
-	((0, 2, 6), (0, 4, 6), (0, 4, 4), (0, 2, 4)): COLORS["green"],
-	((0, 2, 4), (0, 4, 4), (0, 4, 2), (0, 2, 2)): COLORS["green"],
-	((0, 2, 2), (0, 4, 2), (0, 4, 0), (0, 2, 0)): COLORS["green"],
+	((0, 2, 6), (0, 4, 6), (0, 4, 4), (0, 2, 4)): config.COLORS["green"],
+	((0, 2, 4), (0, 4, 4), (0, 4, 2), (0, 2, 2)): config.COLORS["green"],
+	((0, 2, 2), (0, 4, 2), (0, 4, 0), (0, 2, 0)): config.COLORS["green"],
 
 	# Bottom layer on left side (green)
-	((0, 0, 6), (0, 2, 6), (0, 2, 4), (0, 0, 4)): COLORS["green"],
-	((0, 0, 4), (0, 2, 4), (0, 2, 2), (0, 0, 2)): COLORS["green"],
-	((0, 0, 2), (0, 2, 2), (0, 2, 0), (0, 0, 0)): COLORS["green"],
+	((0, 0, 6), (0, 2, 6), (0, 2, 4), (0, 0, 4)): config.COLORS["green"],
+	((0, 0, 4), (0, 2, 4), (0, 2, 2), (0, 0, 2)): config.COLORS["green"],
+	((0, 0, 2), (0, 2, 2), (0, 2, 0), (0, 0, 0)): config.COLORS["green"],
 
 	# Closest layer on bottom (yellow)
-	((0, 0, 0), (2, 0, 0), (2, 0, 2), (0, 0, 2)): COLORS["yellow"],
-	((2, 0, 0), (4, 0, 0), (4, 0, 2), (2, 0, 2)): COLORS["yellow"],
-	((4, 0, 0), (6, 0, 0), (6, 0, 2), (4, 0, 2)): COLORS["yellow"],
+	((0, 0, 0), (2, 0, 0), (2, 0, 2), (0, 0, 2)): config.COLORS["yellow"],
+	((2, 0, 0), (4, 0, 0), (4, 0, 2), (2, 0, 2)): config.COLORS["yellow"],
+	((4, 0, 0), (6, 0, 0), (6, 0, 2), (4, 0, 2)): config.COLORS["yellow"],
 
 	# Middle layer on bottom (yellow)
-	((0, 0, 2), (2, 0, 2), (2, 0, 4), (0, 0, 4)): COLORS["yellow"],
-	((2, 0, 2), (4, 0, 2), (4, 0, 4), (2, 0, 4)): COLORS["yellow"],
-	((4, 0, 2), (6, 0, 2), (6, 0, 4), (4, 0, 4)): COLORS["yellow"],
+	((0, 0, 2), (2, 0, 2), (2, 0, 4), (0, 0, 4)): config.COLORS["yellow"],
+	((2, 0, 2), (4, 0, 2), (4, 0, 4), (2, 0, 4)): config.COLORS["yellow"],
+	((4, 0, 2), (6, 0, 2), (6, 0, 4), (4, 0, 4)): config.COLORS["yellow"],
 
 	# Farthest layer on bottom (yellow)
-	((0, 0, 4), (2, 0, 4), (2, 0, 6), (0, 0, 6)): COLORS["yellow"],
-	((2, 0, 4), (4, 0, 4), (4, 0, 6), (2, 0, 6)): COLORS["yellow"],
-	((4, 0, 4), (6, 0, 4), (6, 0, 6), (4, 0, 6)): COLORS["yellow"],
+	((0, 0, 4), (2, 0, 4), (2, 0, 6), (0, 0, 6)): config.COLORS["yellow"],
+	((2, 0, 4), (4, 0, 4), (4, 0, 6), (2, 0, 6)): config.COLORS["yellow"],
+	((4, 0, 4), (6, 0, 4), (6, 0, 6), (4, 0, 6)): config.COLORS["yellow"],
 	
 	# Orange face in order when looking directly at it
 
 	# Top layer on back (orange)
-	((4, 4, 6), (6, 4, 6), (6, 6, 6), (4, 6, 6)): COLORS["orange"],
-	((2, 4, 6), (4, 4, 6), (4, 6, 6), (2, 6, 6)): COLORS["orange"],
-	((0, 4, 6), (2, 4, 6), (2, 6, 6), (0, 6, 6)): COLORS["orange"],
+	((4, 4, 6), (6, 4, 6), (6, 6, 6), (4, 6, 6)): config.COLORS["orange"],
+	((2, 4, 6), (4, 4, 6), (4, 6, 6), (2, 6, 6)): config.COLORS["orange"],
+	((0, 4, 6), (2, 4, 6), (2, 6, 6), (0, 6, 6)): config.COLORS["orange"],
 
 	# Middle layer on back (orange)
-	((4, 2, 6), (6, 2, 6), (6, 4, 6), (4, 4, 6)): COLORS["orange"],
-	((2, 2, 6), (4, 2, 6), (4, 4, 6), (2, 4, 6)): COLORS["orange"],
-	((0, 2, 6), (2, 2, 6), (2, 4, 6), (0, 4, 6)): COLORS["orange"],
+	((4, 2, 6), (6, 2, 6), (6, 4, 6), (4, 4, 6)): config.COLORS["orange"],
+	((2, 2, 6), (4, 2, 6), (4, 4, 6), (2, 4, 6)): config.COLORS["orange"],
+	((0, 2, 6), (2, 2, 6), (2, 4, 6), (0, 4, 6)): config.COLORS["orange"],
 
 	# Bottom layer on back (orange)
-	((4, 0, 6), (6, 0, 6), (6, 2, 6), (4, 2, 6)): COLORS["orange"],
-	((2, 0, 6), (4, 0, 6), (4, 2, 6), (2, 2, 6)): COLORS["orange"],
-	((0, 0, 6), (2, 0, 6), (2, 2, 6), (0, 2, 6)): COLORS["orange"],
+	((4, 0, 6), (6, 0, 6), (6, 2, 6), (4, 2, 6)): config.COLORS["orange"],
+	((2, 0, 6), (4, 0, 6), (4, 2, 6), (2, 2, 6)): config.COLORS["orange"],
+	((0, 0, 6), (2, 0, 6), (2, 2, 6), (0, 2, 6)): config.COLORS["orange"],
 
 	# Random thing
-	# ((9, 0, 0), (9, 6, 0), (9, 6, 6), (9, 0, 9), (9, 0, 6)): COLORS["black"]
+	# ((9, 0, 0), (9, 6, 0), (9, 6, 6), (9, 0, 9), (9, 0, 6)): config.COLORS["black"]
 }
 
 # used to calculate closest face
 SOLVED_CENTERS = {
-	((2, 2, 0), (4, 2, 0), (4, 4, 0), (2, 4, 0)): COLORS["red"],
-	((2, 6, 2), (4, 6, 2), (4, 6, 4), (2, 6, 4)): COLORS["white"],
-	((6, 2, 4), (6, 4, 4), (6, 4, 2), (6, 2, 2)): COLORS["blue"],
-	((0, 2, 4), (0, 4, 4), (0, 4, 2), (0, 2, 2)): COLORS["green"],
-	((2, 0, 2), (4, 0, 2), (4, 0, 4), (2, 0, 4)): COLORS["yellow"],
-	((2, 2, 6), (4, 2, 6), (4, 4, 6), (2, 4, 6)): COLORS["orange"],
+	((2, 2, 0), (4, 2, 0), (4, 4, 0), (2, 4, 0)): config.COLORS["red"],
+	((2, 6, 2), (4, 6, 2), (4, 6, 4), (2, 6, 4)): config.COLORS["white"],
+	((6, 2, 4), (6, 4, 4), (6, 4, 2), (6, 2, 2)): config.COLORS["blue"],
+	((0, 2, 4), (0, 4, 4), (0, 4, 2), (0, 2, 2)): config.COLORS["green"],
+	((2, 0, 2), (4, 0, 2), (4, 0, 4), (2, 0, 4)): config.COLORS["yellow"],
+	((2, 2, 6), (4, 2, 6), (4, 4, 6), (2, 4, 6)): config.COLORS["orange"],
 }
 
 # {cubelet center: squares' coords}
@@ -252,24 +264,24 @@ SOLVED_CUBELETS = {
 # --- VARIABLES ------------------------------------------------------------------------------------------------
 rubiks_cube = SOLVED_CUBE.copy()
 cubelets = SOLVED_CUBELETS.copy()
-cube_turn_speed = NORMAL_CUBE_TURN_SPEED
+cube_turn_speed = config.NORMAL_CUBE_TURN_SPEED
 centers = SOLVED_CENTERS.copy()
 
 # --- OBJECTS --------------------------------------------------------------------------------------------------
-reset_button = pygame.Rect(SCREEN_WIDTH/5, 540, SCREEN_WIDTH/5*3, 70)
-scramble_button = pygame.Rect(SCREEN_WIDTH/5, 620, SCREEN_WIDTH/5*3, 70)
+reset_button = pygame.Rect(config.SCREEN_WIDTH/5, 540, config.SCREEN_WIDTH/5*3, 70)
+scramble_button = pygame.Rect(config.SCREEN_WIDTH/5, 620, config.SCREEN_WIDTH/5*3, 70)
 
 # --- FUNCIONS -------------------------------------------------------------------------------------------------
 def get_projection(x,y,z):
 	# Get the projection of a 3D point on the 2D screen at z=0
-	x_proj = ((FOCAL_LENGTH*(x-CAMERA_X))/(FOCAL_LENGTH+z))+CAMERA_X
-	y_proj = ((FOCAL_LENGTH*(y-CAMERA_Y))/(FOCAL_LENGTH+z))+CAMERA_Y
+	x_proj = ((config.FOCAL_LENGTH*(x-config.CAMERA_X))/(config.FOCAL_LENGTH+z))+config.CAMERA_X
+	y_proj = ((config.FOCAL_LENGTH*(y-config.CAMERA_Y))/(config.FOCAL_LENGTH+z))+config.CAMERA_Y
 	return (x_proj,y_proj)
 
 
 def real(x,y):
 	# Make (0,0) center of screen
-	return (x+SCREEN_WIDTH/4, SCREEN_WIDTH-y-SCREEN_WIDTH/4)
+	return (x+config.SCREEN_WIDTH/4, config.SCREEN_WIDTH-y-config.SCREEN_WIDTH/4)
 
 
 def draw_polygon_alpha(surface, color, points):
@@ -349,10 +361,10 @@ def scramble():
 	mouse_xvel = 0
 	mouse_yvel = 0
 
-	cube_turn_speed = SCRAMBLE_CUBE_TURN_SPEED
+	cube_turn_speed = config.SCRAMBLE_CUBE_TURN_SPEED
 
 	scramble_progress = 0
-	times = randint(*SCRAMBLE_RANGE)
+	times = randint(*config.SCRAMBLE_RANGE)
 	scrambled = False
 
 	scrambling = True
@@ -367,7 +379,7 @@ def scramble():
 	solved = False	
 
 	scramble_progress = 100
-	cube_turn_speed = NORMAL_CUBE_TURN_SPEED
+	cube_turn_speed = config.NORMAL_CUBE_TURN_SPEED
 
 
 def closest_face():
@@ -491,7 +503,7 @@ def turn(move):
 	else:
 		zrot_degs = rotate_degs
 
-	if DRAW_INTERIOR:
+	if config.DRAW_INTERIOR:
 		# Add black interior of cube to rubiks_cube
 		if to_match[1] == 1:
 			square_depth = 2
@@ -520,7 +532,7 @@ def turn(move):
 				(0, 6, square_depth)
 			)
 		
-		rubiks_cube[interior_square] = COLORS["interior"]
+		rubiks_cube[interior_square] = config.COLORS["interior"]
 	
 		offset_square = []
 		for coords in interior_square:
@@ -535,7 +547,7 @@ def turn(move):
 			offset_square.append((x, y, z))
 	
 		offset_square = tuple(offset_square)
-		rubiks_cube[offset_square] = COLORS["interior"]
+		rubiks_cube[offset_square] = config.COLORS["interior"]
 		squares_to_rotate.append(offset_square)
 
 	# Loop rotation and draw
@@ -580,10 +592,10 @@ def turn(move):
 		rubiks_cube[add] = rubiks_cube.pop(remove)
 
 	# Remove interior of cube from rubiks_cube
-	if DRAW_INTERIOR:
-		rubiks_cube = {key:val for key, val in rubiks_cube.items() if val!=COLORS["interior"]}
+	if config.DRAW_INTERIOR:
+		rubiks_cube = {key:val for key, val in rubiks_cube.items() if val!=config.COLORS["interior"]}
 
-	# print(list(rubiks_cube.values()).count(COLORS["interior"])) # to check if all interiors are removed
+	# print(list(rubiks_cube.values()).count(config.COLORS["interior"])) # to check if all interiors are removed
 
 	# Turn affected cubelets
 	for cubelet_center, squares in cubelets_to_move.items():
@@ -640,13 +652,13 @@ def draw_all(cube, cube_opacity=100):
 	# Create list like [(((x, y, z),(x, y, z)), average distance), (((x, y, z),(x, y, z)), average distance), ...] from rotated_cube
 	average_dists = []
 
-	if AVERAGE_DIST_SORTING:
+	if config.AVERAGE_DIST_SORTING:
 		for vertices in rotated_cube.keys():
 			average_x = sum([vertex[0] for vertex in vertices]) / len(vertices)
 			average_y = sum([vertex[1] for vertex in vertices]) / len(vertices)
 			average_z = sum([vertex[2] for vertex in vertices]) / len(vertices)
 
-			dist = ((CAMERA_X-average_x)**2 + (CAMERA_Y-average_y)**2 + (-FOCAL_LENGTH-average_z)**2)**0.5
+			dist = ((config.CAMERA_X-average_x)**2 + (config.CAMERA_Y-average_y)**2 + (-config.FOCAL_LENGTH-average_z)**2)**0.5
 
 
 			average_dists.append((vertices, dist))
@@ -660,7 +672,7 @@ def draw_all(cube, cube_opacity=100):
 	average_dists.sort(key=lambda x: x[1], reverse=True)
 
 	# Draw the rotated cube	
-	screen.fill(COLORS["background"])
+	screen.fill(config.COLORS["background"])
 	for vertices, _ in average_dists:
 		color_to_draw = rotated_cube[vertices]
 		real_projections = []
@@ -669,91 +681,93 @@ def draw_all(cube, cube_opacity=100):
 		
 		if cube_opacity == 100:
 			pygame.draw.polygon(screen, color_to_draw, real_projections)
-			pygame.draw.aalines(screen, COLORS["border"], True, real_projections, blend=True)
+			pygame.draw.aalines(screen, config.COLORS["border"], True, real_projections, blend=True)
 		else:
 			draw_polygon_alpha(screen, (*color_to_draw, cube_opacity/100*255), real_projections)
-			alpha_lines(screen, (*COLORS["border"], cube_opacity/100*255), True, real_projections)
+			alpha_lines(screen, (*config.COLORS["border"], cube_opacity/100*255), True, real_projections)
 
 
 	# --- RESET BUTTON ------------------------------------------------------------
-	pygame.draw.rect(screen, COLORS["button_bg"], reset_button, border_radius=20)
-	text("Reset", reset_button.centerx, reset_button.centery, font="verdana", size=20, color=COLORS["button_fg"])
+	pygame.draw.rect(screen, config.COLORS["button_bg"], reset_button, border_radius=20)
+	text("Reset", reset_button.centerx, reset_button.centery, font="verdana", size=20, color=config.COLORS["button_fg"])
 
 	# --- SCRAMBLE BUTTON ------------------------------------------------------------
-	pygame.draw.rect(screen, COLORS["button_bg"], scramble_button, border_radius=20)
+	pygame.draw.rect(screen, config.COLORS["button_bg"], scramble_button, border_radius=20)
 	if not scrambling:
-		text("Scramble", scramble_button.centerx, scramble_button.centery, font="verdana", size=20, color=COLORS["button_fg"])
+		text("Scramble", scramble_button.centerx, scramble_button.centery, font="verdana", size=20, color=config.COLORS["button_fg"])
 	else:
 		text(f"Scrambling... ({scramble_progress}%)", scramble_button.centerx, scramble_button.centery, font="verdana", 
-			   size=20, color=COLORS["scrambling"])
+			   size=20, color=config.COLORS["scrambling"])
 
 	# --- START SCREEN ------------------------------------------------------------
 	if not started: # Show instructions and title
-		draw_polygon_alpha(screen, (0,0,0, 200), ((0, 0), (SCREEN_WIDTH, 0), 
-						  (SCREEN_WIDTH, SCREEN_HEIGHT), (0, SCREEN_HEIGHT)))
+		draw_polygon_alpha(screen, (0,0,0, 200), ((0, 0), (config.SCREEN_WIDTH, 0), 
+						  (config.SCREEN_WIDTH, config.SCREEN_HEIGHT), (0, config.SCREEN_HEIGHT)))
 
-		text("Virtual Cube", SCREEN_WIDTH/2, SCREEN_HEIGHT/2.5, 
+		text("Virtual Cube", config.SCREEN_WIDTH/2, config.SCREEN_HEIGHT/2.5, 
 			   font="verdana", size=40, bold=True)
 
 		try:
-			instructions_alpha = (pre_start_frames-INSTRUCTIONS_DELAY_SECS*FPS) / \
-			(INSTRUCTIONS_FADE_SECS*FPS-INSTRUCTIONS_DELAY_SECS) * 255
+			instructions_alpha = (pre_start_frames-config.INSTRUCTIONS_DELAY_SECS*config.FPS) / \
+			(config.INSTRUCTIONS_FADE_SECS*config.FPS-config.INSTRUCTIONS_DELAY_SECS) * 255
 		except ZeroDivisionError:
 			instructions_alpha = 0
 
 		instructions_alpha = max(instructions_alpha, 0)
 
-		text("Click and drag to rotate", SCREEN_WIDTH/2, SCREEN_HEIGHT/2.5+40,
+		text("Click and drag to rotate", config.SCREEN_WIDTH/2, config.SCREEN_HEIGHT/2.5+40,
 			   font="verdana", size=20, alpha=min(instructions_alpha, 255))
 		
-		text("F, B, L, R, U, and D keys to turn", SCREEN_WIDTH/2, SCREEN_HEIGHT/2.5+70,
-			   font="verdana", size=20, alpha=min(instructions_alpha, 255+INSTRUCTION_GAP_FRAMES)-INSTRUCTION_GAP_FRAMES)
+		text("F, B, L, R, U, and D keys to turn", config.SCREEN_WIDTH/2, config.SCREEN_HEIGHT/2.5+70,
+			   font="verdana", size=20, alpha=min(instructions_alpha, 255+config.INSTRUCTION_GAP_FRAMES)-config.INSTRUCTION_GAP_FRAMES)
 		
-		text("Shift to turn counter-clockwise", SCREEN_WIDTH/2, SCREEN_HEIGHT/2.5+100,
-			   font="verdana", size=20, alpha=min(instructions_alpha, 255+INSTRUCTION_GAP_FRAMES*2)-INSTRUCTION_GAP_FRAMES*2)
+		text("Shift to turn counter-clockwise", config.SCREEN_WIDTH/2, config.SCREEN_HEIGHT/2.5+100,
+			   font="verdana", size=20, alpha=min(instructions_alpha, 255+config.INSTRUCTION_GAP_FRAMES*2)-config.INSTRUCTION_GAP_FRAMES*2)
 		
 		pre_start_frames += 1
 
-	elif post_start_frames < FADE_OUT_SECS*FPS: # Fade out
-		all_alpha = 255 - (post_start_frames / (FADE_OUT_SECS*FPS) * 255)
+	elif post_start_frames < config.FADE_OUT_SECS*config.FPS: # Fade out
+		all_alpha = 255 - (post_start_frames / (config.FADE_OUT_SECS*config.FPS) * 255)
 		all_alpha = max(all_alpha, 0)
 		all_alpha = min(all_alpha, 200)
 
-		draw_polygon_alpha(screen, (0,0,0, all_alpha), ((0, 0), (SCREEN_WIDTH, 0), 
-						  (SCREEN_WIDTH, SCREEN_HEIGHT), (0, SCREEN_HEIGHT)))
+		draw_polygon_alpha(screen, (0,0,0, all_alpha), ((0, 0), (config.SCREEN_WIDTH, 0), 
+						  (config.SCREEN_WIDTH, config.SCREEN_HEIGHT), (0, config.SCREEN_HEIGHT)))
 
-		text("Virtual Cube", SCREEN_WIDTH/2, SCREEN_HEIGHT/2.5, 
+		text("Virtual Cube", config.SCREEN_WIDTH/2, config.SCREEN_HEIGHT/2.5, 
 			   font="verdana", size=40, bold=True, alpha=all_alpha)
 	
-		text("Click and drag to rotate", SCREEN_WIDTH/2, SCREEN_HEIGHT/2.5+40,
+		text("Click and drag to rotate", config.SCREEN_WIDTH/2, config.SCREEN_HEIGHT/2.5+40,
 			   font="verdana", size=20, alpha=all_alpha)
 		
 		# Write FPS
 		
-		if SHOW_FPS:	text(f"FPS: {int(clock.get_fps())}", 20, 20, font="verdana", size=18, color=COLORS["fps"], alpha=200-all_alpha, centered=False)
+		if config.SHOW_FPS:
+			text(f"FPS: {int(clock.get_fps())}", 20, 20, font="verdana", size=18, color=config.COLORS["fps"], alpha=200-all_alpha, centered=False)
 
 		post_start_frames += 1
 
 	else:
 		# Write FPS
-		if SHOW_FPS:	text(f"FPS: {int(clock.get_fps())}", 20, 20, font="verdana", size=18, color=COLORS["fps"], centered=False)
+		if config.SHOW_FPS:
+			text(f"FPS: {int(clock.get_fps())}", 20, 20, font="verdana", size=18, color=config.COLORS["fps"], centered=False)
 
 	# --- TIME ------------------------------------------------------------
 	if scrambled and not solved:
 		time_passed = (pygame.time.get_ticks() - start_time) / 1000
 		minutes = int(time_passed // 60)
 		seconds = time_passed - minutes * 60
-		text(f"{minutes:02}:{seconds:0>5.2f}", SCREEN_WIDTH/2, 40, font="verdana", size=30, color=COLORS["time"])
+		text(f"{minutes:02}:{seconds:0>5.2f}", config.SCREEN_WIDTH/2, 40, font="verdana", size=30, color=config.COLORS["time"])
 
 	if scrambled and solved:
 		minutes = int(final_time // 60)
 		seconds = final_time - minutes * 60
-		text(f"SOLVED IN {minutes:02}:{seconds:0>5.2f}", SCREEN_WIDTH/2, 40, font="verdana", size=30, color=COLORS["time"])
+		text(f"SOLVED IN {minutes:02}:{seconds:0>5.2f}", config.SCREEN_WIDTH/2, 40, font="verdana", size=30, color=config.COLORS["time"])
 
 	# Flip display
 	pygame.display.flip()
 	
-	clock.tick(FPS)
+	clock.tick(config.FPS)
 
 
 def glide_cube_rot(target_xaxis_rot=0, target_yaxis_rot=0, factor = 0.05):
@@ -778,17 +792,17 @@ def is_cube_solved():
 	blue_squares_coords = []
 
 	for square, color in rubiks_cube.items():
-		if color == COLORS["red"]:
+		if color == config.COLORS["red"]:
 			red_squares_coords.append(square)
-		elif color == COLORS["orange"]:
+		elif color == config.COLORS["orange"]:
 			orange_squares_coords.append(square)
-		elif color == COLORS["white"]:
+		elif color == config.COLORS["white"]:
 			white_squares_coords.append(square)
-		elif color == COLORS["yellow"]:
+		elif color == config.COLORS["yellow"]:
 			yellow_squares_coords.append(square)
-		elif color == COLORS["green"]:
+		elif color == config.COLORS["green"]:
 			green_squares_coords.append(square)
-		elif color == COLORS["blue"]:
+		elif color == config.COLORS["blue"]:
 			blue_squares_coords.append(square)
 	
 	# Check if all zs in red_squares_coords are the same
@@ -887,7 +901,7 @@ def main():
 	pygame.display.set_icon(pygame.image.load(path.dirname(__file__)+"/icon.png"))
 
 	# Next line triggers NSApplicationDelegate's warning for some reason on Mac
-	screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+	screen = pygame.display.set_mode((config.SCREEN_WIDTH, config.SCREEN_HEIGHT))
 
 	pygame.event.set_allowed([pygame.QUIT, pygame.MOUSEBUTTONDOWN, pygame.MOUSEBUTTONUP])
 
@@ -961,8 +975,8 @@ def main():
 				initial_mouse_pos = current_mouse_pos
 			else:
 				if abs(mouse_xvel) > 0.005 or abs(mouse_yvel) > 0.005:
-					mouse_xvel *= SPIN_FACTOR
-					mouse_yvel *= SPIN_FACTOR
+					mouse_xvel *= config.SPIN_FACTOR
+					mouse_yvel *= config.SPIN_FACTOR
 				else:
 					mouse_xvel = 0
 					mouse_yvel = 0
@@ -973,57 +987,57 @@ def main():
 
 			if keys_pressed[pygame.K_f]:
 				closest = closest_face()
-				if closest == COLORS["red"]:		move = "F"
-				elif closest == COLORS["white"]:	move = "U"
-				elif closest == COLORS["blue"]:		move = "R"
-				elif closest == COLORS["green"]:	move = "L"
-				elif closest == COLORS["yellow"]:	move = "D"
-				elif closest == COLORS["orange"]:	move = "B"
+				if closest == config.COLORS["red"]:		move = "F"
+				elif closest == config.COLORS["white"]:	move = "U"
+				elif closest == config.COLORS["blue"]:		move = "R"
+				elif closest == config.COLORS["green"]:	move = "L"
+				elif closest == config.COLORS["yellow"]:	move = "D"
+				elif closest == config.COLORS["orange"]:	move = "B"
 
 			elif keys_pressed[pygame.K_b]:
 				closest = closest_face()
-				if closest == COLORS["red"]:		move = "B"
-				elif closest == COLORS["white"]:	move = "D"
-				elif closest == COLORS["blue"]:		move = "L"
-				elif closest == COLORS["green"]:	move = "R"
-				elif closest == COLORS["yellow"]:	move = "U"
-				elif closest == COLORS["orange"]:	move = "F"
+				if closest == config.COLORS["red"]:		move = "B"
+				elif closest == config.COLORS["white"]:	move = "D"
+				elif closest == config.COLORS["blue"]:		move = "L"
+				elif closest == config.COLORS["green"]:	move = "R"
+				elif closest == config.COLORS["yellow"]:	move = "U"
+				elif closest == config.COLORS["orange"]:	move = "F"
 
 			elif keys_pressed[pygame.K_u]:
 				top = top_face()
-				if top == COLORS["white"]:			move = "U"
-				elif top == COLORS["blue"]:			move = "R"
-				elif top == COLORS["green"]:		move = "L"
-				elif top == COLORS["yellow"]:		move = "D"
-				elif top == COLORS["orange"]:		move = "B"
-				elif top == COLORS["red"]:			move = "F"
+				if top == config.COLORS["white"]:			move = "U"
+				elif top == config.COLORS["blue"]:			move = "R"
+				elif top == config.COLORS["green"]:		move = "L"
+				elif top == config.COLORS["yellow"]:		move = "D"
+				elif top == config.COLORS["orange"]:		move = "B"
+				elif top == config.COLORS["red"]:			move = "F"
 
 			elif keys_pressed[pygame.K_d]:
 				top = top_face()
-				if top == COLORS["white"]:			move = "D"
-				elif top == COLORS["blue"]:			move = "L"
-				elif top == COLORS["green"]:		move = "R"
-				elif top == COLORS["yellow"]:		move = "U"
-				elif top == COLORS["orange"]:		move = "F"
-				elif top == COLORS["red"]:			move = "B"
+				if top == config.COLORS["white"]:			move = "D"
+				elif top == config.COLORS["blue"]:			move = "L"
+				elif top == config.COLORS["green"]:		move = "R"
+				elif top == config.COLORS["yellow"]:		move = "U"
+				elif top == config.COLORS["orange"]:		move = "F"
+				elif top == config.COLORS["red"]:			move = "B"
 
 			elif keys_pressed[pygame.K_l]:
 				left = left_face()
-				if left == COLORS["green"]:			move = "L"
-				elif left == COLORS["white"]:		move = "U"
-				elif left == COLORS["yellow"]:		move = "D"
-				elif left == COLORS["blue"]:		move = "R"
-				elif left == COLORS["orange"]:		move = "B"
-				elif left == COLORS["red"]:			move = "F"
+				if left == config.COLORS["green"]:			move = "L"
+				elif left == config.COLORS["white"]:		move = "U"
+				elif left == config.COLORS["yellow"]:		move = "D"
+				elif left == config.COLORS["blue"]:		move = "R"
+				elif left == config.COLORS["orange"]:		move = "B"
+				elif left == config.COLORS["red"]:			move = "F"
 			
 			elif keys_pressed[pygame.K_r]:
 				left = left_face()
-				if left == COLORS["green"]:			move = "R"
-				elif left == COLORS["white"]:		move = "D"
-				elif left == COLORS["yellow"]:		move = "U"
-				elif left == COLORS["blue"]:		move = "L"
-				elif left == COLORS["orange"]:		move = "F"
-				elif left == COLORS["red"]:			move = "B"
+				if left == config.COLORS["green"]:			move = "R"
+				elif left == config.COLORS["white"]:		move = "D"
+				elif left == config.COLORS["yellow"]:		move = "U"
+				elif left == config.COLORS["blue"]:		move = "L"
+				elif left == config.COLORS["orange"]:		move = "F"
+				elif left == config.COLORS["red"]:			move = "B"
 				
 			if move:
 				if keys_pressed[pygame.K_LSHIFT] or keys_pressed[pygame.K_RSHIFT]:
@@ -1038,17 +1052,17 @@ def main():
 					
 		else:
 			pre_start_frames += 1
-			mouse_xvel = -9/FPS
+			mouse_xvel = -9/config.FPS
 
 		draw_all(rubiks_cube)
 		
 		if reset_button.collidepoint(pygame.mouse.get_pos()):
 			if pygame.mouse.get_pressed()[0] and not mouse_dragging:
 
-				if RESET_TYPE == "FADE":
-					for alpha in reversed(np.linspace(0, 100, RESET_FADE_FRAMES)):
+				if config.RESET_TYPE == "FADE":
+					for alpha in reversed(np.linspace(0, 100, config.RESET_FADE_FRAMES)):
 						draw_all(rubiks_cube, int(alpha))
-					sleep(RESET_PAUSE_SECONDS)
+					sleep(config.RESET_PAUSE_SECONDS)
 				
 				mouse_xvel = 0
 				mouse_yvel = 0
@@ -1058,12 +1072,12 @@ def main():
 				start_time = None
 				scrambled = False
 
-				if RESET_TYPE == "FADE":
+				if config.RESET_TYPE == "FADE":
 					xaxis_rot = 0
 					yaxis_rot = 0
 					zaxis_rot = 0
 
-					for alpha in np.linspace(0, 100, RESET_FADE_FRAMES):
+					for alpha in np.linspace(0, 100, config.RESET_FADE_FRAMES):
 						draw_all(rubiks_cube, alpha)
 				else:
 					glide_cube_rot()
