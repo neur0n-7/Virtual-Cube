@@ -24,7 +24,7 @@ from random import choice, randint
 from time import sleep
 import sys
 
-# Import numpy and pygame
+# numpy and pygame
 try:
 	environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 	import pygame
@@ -33,11 +33,13 @@ except (ModuleNotFoundError, ImportError):
 	print("Missing required package pygame. Install now?")
 	if input("> ").upper().startswith("Y"):
 		print("Installing pygame...")
-		system("pip install pygame==2.6.0") # -q -q to only show errors and criticals
+		system("pip install pygame==2.6.0")
 		print("pygame module installed.")
 		environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 		import pygame
 		import pygame.gfxdraw
+	else:
+		quit("Exiting... (MissingRequiredModule)")
 
 try:
 	import numpy as np
