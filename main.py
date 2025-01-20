@@ -24,35 +24,16 @@ from random import choice, randint
 from time import sleep
 import sys
 
-# numpy and pygame
 try:
 	environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 	import pygame
 	import pygame.gfxdraw
-except (ModuleNotFoundError, ImportError):
-	print("Missing required package pygame. Install now?")
-	if input("> ").upper().startswith("Y"):
-		print("Installing pygame...")
-		system("pip install pygame==2.6.0")
-		print("pygame module installed.")
-		environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
-		import pygame
-		import pygame.gfxdraw
-	else:
-		quit("Exiting... (MissingRequiredModule)")
-
-try:
 	import numpy as np
 except (ModuleNotFoundError, ImportError):
-	print("Missing required package numpy. Install now?")
-	if input("> ").upper().startswith("Y"):
-		print("Installing numpy...")
-		system("pip install numpy==1.26.4")
-		print("numpy module installed.")
-		import numpy as np
-	else:
-		quit("Exiting... (MissingRequiredModule)")
-
+	print("Missing one or more required packages.")
+	print("Run \"pip install -r requirements.txt\" and then run this file again.")
+	sys.exit()
+	
 # Virtual Cube configuration settings #######################################################################################
 
 # CAMERA SETTINGS
