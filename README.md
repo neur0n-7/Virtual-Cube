@@ -13,11 +13,8 @@
 > [!IMPORTANT]
 > You need to have Python installed on your system in order to run Virtual Cube.  
 > You can download it [here](https://www.python.org/downloads/).  
-> If you are still unable to run it, try specifically downloading version 3.12.4.
 
-Requires modules pygame and numpy. If they are not installed, the program will install them on your system with `os.system()`.  
-
-`config.py` contains the constants needed to run `main.py`. To change any settings of Virtual Cube, you can edit `config.py`'s settings to your desire.
+Requires modules pygame and numpy. Run `pip install -r requirements.txt` to install the required packages on your system before running main.py.
 
 ## Instructions
 <ul>
@@ -33,10 +30,11 @@ Requires modules pygame and numpy. If they are not installed, the program will i
     <li>Download the latest stable version of Python 3.X from https://www.python.org/downloads/ if you haven't already done so. (This was made with Python 3.12.4)</li>
     <li>Download this repository as a .zip file.</li>
     <li>Extract the .zip into a folder.</li>
+    <li>Install the required packages.</li>
     <li>Run main.py from the terminal, IDLE, or any other IDE/text editor that supports Python.</li>
 </ol>
 
-Alternatively, if you have `git` installed, run `git clone https://github.com/neur0n-7/Virtual-Cube.git` to directly download the contents of this repository.
+Alternatively, if you have `git` installed, run `git clone https://github.com/neur0n-7/Virtual-Cube.git` to directly clone the contents of this repository.
 
 ## Report Issues  
 If you happen to have an issue with Virtual Cube, please open an issue on GitHub.  
