@@ -11,10 +11,9 @@
 <hr>  
 
 > [!IMPORTANT]
-> You need to have Python installed on your system in order to run Virtual Cube.  
-> You can download it [here](https://www.python.org/downloads/).  
+> Requires modules pygame and numpy.
+> Run `pip install -r requirements.txt` to install the required packages on your system before running `main.py`.
 
-Requires modules pygame and numpy. Run `pip install -r requirements.txt` to install the required packages on your system before running main.py.
 
 ## Instructions
 <ul>
