@@ -45,6 +45,7 @@ FOCAL_LENGTH = 450
 SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 720
 FPS = 60
+SHOW_FPS = True
 
 # COLORS
 COLORS  = {
@@ -66,11 +67,10 @@ COLORS  = {
 
 
 # CUBE SETTINGS
-SPIN_FACTOR = 0.9 # Higher = faster and vice versa, between 0 and 1
+SPIN_FACTOR = 0.9 # Higher = faster and vice versa, between 0 and 1 (when cube is spun with the mouse)
 NORMAL_CUBE_TURN_SPEED = 9 # Should be a divisor of 90 (or very close to it)
 SCRAMBLE_CUBE_TURN_SPEED = 18 # Should be a divisor of 90 (or very close to it)
-SCRAMBLE_RANGE = (10, 30) # Min and max number of times to scramble
-DRAW_INTERIOR = True # Whether or not to draw the interior of the cube
+SCRAMBLE_RANGE = (20, 30) # Min and max number of times to scramble
 
 # INSTRUCTIONS SETTINGS
 INSTRUCTIONS_DELAY_SECS = 0.5 # How long to wait before showing instructions
@@ -86,9 +86,6 @@ if RESET_TYPE == "FADE":
 	RESET_FADE_FRAMES = int(RESET_FADE_SECONDS*FPS)
 	RESET_PAUSE_SECONDS = 0.25 # How long to pause after fading out before fading in again
 
-SHOW_FPS = True
-
-AVERAGE_DIST_SORTING = False # If this is false, sorting will only take average Z position into account instead of X, Y, and Z
 
 ##############################################################################################################################
 
@@ -204,98 +201,8 @@ SOLVED_CENTERS = {
 	((2, 2, 6), (4, 2, 6), (4, 4, 6), (2, 4, 6)): COLORS["orange"],
 }
 
-# {cubelet center: squares' coords}
-# there are 3^3-1 = 26 cubelets (don't need center one)
-SOLVED_CUBELETS = {
-	# Front layer cubelets (9) in order
-	(1, 5, 1): (((0, 4, 0), (2, 4, 0), (2, 6, 0), (0, 6, 0)),
-			 ((0, 6, 0), (2, 6, 0), (2, 6, 2), (0, 6, 2)),
-			 ((0, 4, 2), (0, 6, 2), (0, 6, 0), (0, 4, 0))),
-
-	(3, 5, 1): (((2, 4, 0), (4, 4, 0), (4, 6, 0), (2, 6, 0)),
-			 ((2, 6, 0), (4, 6, 0), (4, 6, 2), (2, 6, 2))),
-
-	(5, 5, 1): (((4, 4, 0), (6, 4, 0), (6, 6, 0), (4, 6, 0)),
-			 ((4, 6, 0), (6, 6, 0), (6, 6, 2), (4, 6, 2)),
-			 ((6, 4, 2), (6, 6, 2), (6, 6, 0), (6, 4, 0))),
-	
-	(1, 3, 1): (((0, 2, 0), (2, 2, 0), (2, 4, 0), (0, 4, 0)),
-			 ((0, 2, 2), (0, 4, 2), (0, 4, 0), (0, 2, 0))),
-	
-	(3, 3, 1): (((2, 2, 0), (4, 2, 0), (4, 4, 0), (2, 4, 0)),),
-
-	(5, 3, 1): (((4, 2, 0), (6, 2, 0), (6, 4, 0), (4, 4, 0)),
-			 ((6, 2, 2), (6, 4, 2), (6, 4, 0), (6, 2, 0))),
-	
-	(1, 1, 1): (((0, 0, 0), (2, 0, 0), (2, 2, 0), (0, 2, 0)),
-			 ((0, 0, 2), (0, 2, 2), (0, 2, 0), (0, 0, 0)),
-			 ((0, 0, 0), (2, 0, 0), (2, 0, 2), (0, 0, 2))),
-	
-	(3, 1, 1): (((2, 0, 0), (4, 0, 0), (4, 2, 0), (2, 2, 0)),
-			 ((2, 0, 0), (4, 0, 0), (4, 0, 2), (2, 0, 2))),
-	
-	(5, 1, 1):(((4, 0, 0), (6, 0, 0), (6, 2, 0), (4, 2, 0)),
-			((6, 0, 2), (6, 2, 2), (6, 2, 0), (6, 0, 0)),
-			((4, 0, 0), (6, 0, 0), (6, 0, 2), (4, 0, 2))),
-
-	# Middle layer cubelets (8) in order
-	(1, 5, 3): (((0, 6, 2), (2, 6, 2), (2, 6, 4), (0, 6, 4)),
-			 ((0, 4, 4), (0, 6, 4), (0, 6, 2), (0, 4, 2))),
-	
-	(3, 5, 3): (((2, 6, 2), (4, 6, 2), (4, 6, 4), (2, 6, 4)),),
-
-	(5, 5, 3): (((4, 6, 2), (6, 6, 2), (6, 6, 4), (4, 6, 4)),
-			 ((6, 4, 4), (6, 6, 4), (6, 6, 2), (6, 4, 2))),
-	
-	(1, 3, 3): (((0, 2, 4), (0, 4, 4), (0, 4, 2), (0, 2, 2)),),
-
-	# Skip core at (3, 3, 3)
-
-	(5, 3, 3): (((6, 2, 4), (6, 4, 4), (6, 4, 2), (6, 2, 2)),),
-
-	(1, 1, 3): (((0, 0, 4), (0, 2, 4), (0, 2, 2), (0, 0, 2)),
-			 ((0, 0, 2), (2, 0, 2), (2, 0, 4), (0, 0, 4))),
-
-	(3, 1, 3): (((2, 0, 2), (4, 0, 2), (4, 0, 4), (2, 0, 4)),),
-
-	(5, 1, 3): (((6, 0, 4), (6, 2, 4), (6, 2, 2), (6, 0, 2)),
-			 ((4, 0, 2), (6, 0, 2), (6, 0, 4), (4, 0, 4))),
-	
-	# Back layer cubelets (9) in order according to frontal view
-	(1, 5, 5): (((0, 6, 4), (2, 6, 4), (2, 6, 6), (0, 6, 6)),
-			 ((0, 4, 6), (0, 6, 6), (0, 6, 4), (0, 4, 4)),
-			 ((0, 4, 6), (2, 4, 6), (2, 6, 6), (0, 6, 6))),
-	
-	(3, 5, 5): (((2, 6, 4), (4, 6, 4), (4, 6, 6), (2, 6, 6)),
-			 ((2, 4, 6), (4, 4, 6), (4, 6, 6), (2, 6, 6))),
-
-	(5, 5, 5): (((4, 6, 4), (6, 6, 4), (6, 6, 6), (4, 6, 6)),
-			 ((6, 4, 6), (6, 6, 6), (6, 6, 4), (6, 4, 4)),
-			 ((4, 4, 6), (6, 4, 6), (6, 6, 6), (4, 6, 6))),
-
-	(1, 3, 5): (((0, 2, 6), (0, 4, 6), (0, 4, 4), (0, 2, 4)),
-			 ((0, 2, 6), (2, 2, 6), (2, 4, 6), (0, 4, 6))),
-	
-	(3, 3, 5): (((2, 2, 6), (4, 2, 6), (4, 4, 6), (2, 4, 6)),),
-
-	(5, 3, 5): (((6, 2, 6), (6, 4, 6), (6, 4, 4), (6, 2, 4)),
-			 ((4, 2, 6), (6, 2, 6), (6, 4, 6), (4, 4, 6))),
-	
-	(1, 1, 5): (((0, 0, 6), (0, 2, 6), (0, 2, 4), (0, 0, 4)),
-			 ((0, 0, 6), (2, 0, 6), (2, 2, 6), (0, 2, 6)),
-			 ((0, 0, 4), (2, 0, 4), (2, 0, 6), (0, 0, 6))),
-	
-	(3, 1, 5): (((2, 0, 6), (4, 0, 6), (4, 2, 6), (2, 2, 6)),
-			 ((2, 0, 4), (4, 0, 4), (4, 0, 6), (2, 0, 6))),
-
-	(5, 1, 5): (((6, 0, 6), (6, 2, 6), (6, 2, 4), (6, 0, 4)),
-			 ((4, 0, 6), (6, 0, 6), (6, 2, 6), (4, 2, 6)),
-			 ((4, 0, 4), (6, 0, 4), (6, 0, 6), (4, 0, 6)))
-}
-
 # --- VARIABLES ------------------------------------------------------------------------------------------------
 rubiks_cube = SOLVED_CUBE.copy()
-cubelets = SOLVED_CUBELETS.copy()
 cube_turn_speed = NORMAL_CUBE_TURN_SPEED
 centers = SOLVED_CENTERS.copy()
 
@@ -469,32 +376,34 @@ def left_face():
 
 
 def turn(move):
-	global cubelets, rubiks_cube
+	global rubiks_cube
 	# move is U, U', F, F', etc.
 	# to_match = what cubelets to move (and what axis to rotate around)
 
 	move: str = move # type hinting
 	backwards_rot = False # rotate around axis by negative amount?
 
-	offset_amount = 0.01
 
 	if move.startswith("U"):
-		to_match = ("y", 5)
+		to_match = ("y", 6)
 		backwards_rot = True
-		offset_amount = -0.01
+
 	elif move.startswith("D"):
-		to_match = ("y", 1)
+		to_match = ("y", 0)
+
 	elif move.startswith("F"):
-		to_match = ("z", 1)
-		offset_amount = -0.01
+		to_match = ("z", 0)
+		offset_amount = -0.001
+
 	elif move.startswith("B"):
-		to_match = ("z", 5)
+		to_match = ("z", 6)
 		backwards_rot = True
+
 	elif move.startswith("L"):
-		to_match = ("x", 1)
-		offset_amount = -0.01
+		to_match = ("x", 0)
+
 	elif move.startswith("R"):
-		to_match = ("x", 5)
+		to_match = ("x", 6)
 		backwards_rot = True
 
 		
@@ -503,10 +412,6 @@ def turn(move):
 	
 	# Get cubelets to rotate
 	match_index = ["x", "y", "z"].index(to_match[0])
-	cubelets_to_move = {}
-	for cubelet, squares in cubelets.items():
-		if cubelet[match_index] == to_match[1]:
-			cubelets_to_move[cubelet] = squares
 	
 	# Get center of rotation
 	rotation_center = [3, 3, 3]
@@ -514,9 +419,13 @@ def turn(move):
 
 	# Get squares to rotate
 	squares_to_rotate = []
-	for squares in cubelets_to_move.values():
-		for square in squares:
-			squares_to_rotate.append(square)
+	for square in rubiks_cube:
+
+		for coord in square:
+			if coord[match_index]==to_match[1]:
+				squares_to_rotate.append(square)
+				break
+
 	
 	# Get degrees to rotate by
 	if backwards_rot:
@@ -535,52 +444,6 @@ def turn(move):
 	else:
 		zrot_degs = rotate_degs
 
-	if DRAW_INTERIOR:
-		# Add black interior of cube to rubiks_cube
-		if to_match[1] == 1:
-			square_depth = 2
-		else:
-			square_depth = 4
-
-		if to_match[0] == "x":
-			interior_square = (
-				(square_depth, 0, 0),
-				(square_depth, 0, 6),
-				(square_depth, 6, 6),
-				(square_depth, 6, 0)
-			)
-		elif to_match[0] == "y":
-			interior_square = (
-				(0, square_depth, 0),
-				(6, square_depth, 0),
-				(6, square_depth, 6),
-				(0, square_depth, 6)
-			)
-		else:
-			interior_square = (
-				(0, 0, square_depth),
-				(6, 0, square_depth),
-				(6, 6, square_depth),
-				(0, 6, square_depth)
-			)
-		
-		rubiks_cube[interior_square] = COLORS["interior"]
-	
-		offset_square = []
-		for coords in interior_square:
-			x, y, z = coords
-			if match_index == 0:
-				x += offset_amount
-			elif match_index == 1:
-				y += offset_amount
-			elif match_index == 2:
-				z += offset_amount
-
-			offset_square.append((x, y, z))
-	
-		offset_square = tuple(offset_square)
-		rubiks_cube[offset_square] = COLORS["interior"]
-		squares_to_rotate.append(offset_square)
 
 	# Loop rotation and draw
 	times = int(90/cube_turn_speed)
@@ -623,48 +486,6 @@ def turn(move):
 	for add, remove in zip(to_add_keys, to_remove_keys):
 		rubiks_cube[add] = rubiks_cube.pop(remove)
 
-	# Remove interior of cube from rubiks_cube
-	if DRAW_INTERIOR:
-		rubiks_cube = {key:val for key, val in rubiks_cube.items() if val!=COLORS["interior"]}
-
-	# print(list(rubiks_cube.values()).count(COLORS["interior"])) # to check if all interiors are removed
-
-	# Turn affected cubelets
-	for cubelet_center, squares in cubelets_to_move.items():
-		rotated_squares = []
-		for square in squares:
-			rotated_square = []
-			for x, y, z in square:
-				rotated_square.append(rotated_point(x, y, z, xrot_degs*times, yrot_degs*times, zrot_degs*times, rotation_center))
-
-			rotated_squares.append(tuple(rotated_square))
-
-		rotated_center = rotated_point(*cubelet_center, xrot_degs*times, yrot_degs*times, zrot_degs*times, rotation_center)
-	
-		cubelets[tuple(rotated_center)] = rotated_squares
-		
-	# Snap cubelets (round keys and coords in values)
-	rounded_cubelets = {}
-
-	for key, value in cubelets.items():
-		rounded_key = tuple([round(x) for x in key])
-
-		rounded_value = []
-		for square in value:
-			rounded_square = []
-			for x, y, z in square:
-				rounded_square.append((round(x), round(y), round(z)))
-
-			rounded_value.append(tuple(rounded_square))
-
-		rounded_value = tuple(rounded_value)
-		cubelets[rounded_key] = rounded_value
-		rounded_cubelets[rounded_key] = rounded_value
-
-
-	# Update cubelets
-	cubelets = rounded_cubelets.copy()
-
 
 def draw_all(cube, cube_opacity=100):
 	global average_dists, rotated_cube, pre_start_frames, post_start_frames
@@ -682,30 +503,20 @@ def draw_all(cube, cube_opacity=100):
 		rotated_cube[tuple(temp)] = color
 
 	# Create list like [(((x, y, z),(x, y, z)), average distance), (((x, y, z),(x, y, z)), average distance), ...] from rotated_cube
-	average_dists = []
-
-	if AVERAGE_DIST_SORTING:
-		for vertices in rotated_cube.keys():
-			average_x = sum([vertex[0] for vertex in vertices]) / len(vertices)
-			average_y = sum([vertex[1] for vertex in vertices]) / len(vertices)
-			average_z = sum([vertex[2] for vertex in vertices]) / len(vertices)
-
-			dist = ((CAMERA_X-average_x)**2 + (CAMERA_Y-average_y)**2 + (-FOCAL_LENGTH-average_z)**2)**0.5
+	dists = []
 
 
-			average_dists.append((vertices, dist))
-	else:
-		for vertices in rotated_cube.keys():
-			average_z = sum([vertex[2] for vertex in vertices]) / len(vertices)
-			average_dists.append((vertices, average_z))
+	for vertices in rotated_cube.keys():
+		maxz = max([vertex[2] for vertex in vertices])
+		dists.append((vertices, maxz))
 	
 
 	# Sort average_zs by average z
-	average_dists.sort(key=lambda x: x[1], reverse=True)
+	dists.sort(key=lambda x: x[1], reverse=True)
 
 	# Draw the rotated cube	
 	screen.fill(COLORS["background"])
-	for vertices, _ in average_dists:
+	for vertices, _ in dists:
 		color_to_draw = rotated_cube[vertices]
 		real_projections = []
 		for vertex in vertices:
@@ -919,7 +730,7 @@ def alpha_lines(surface, color, closed, points):
 # --- MAIN -----------------------------------------------------------------------------------------------------
 def main():
 	global screen, rotated_cube, xaxis_rot, yaxis_rot, zaxis_rot, pre_start_frames, post_start_frames, \
-		scrambling, started, rubiks_cube, cubelets, clock, scrambled, solved, start_time, final_time, \
+		scrambling, started, rubiks_cube, clock, scrambled, solved, start_time, final_time, \
 		mouse_xvel, mouse_yvel
 
 	pygame.init()
@@ -1094,7 +905,6 @@ def main():
 				mouse_xvel = 0
 				mouse_yvel = 0
 				rubiks_cube = SOLVED_CUBE.copy()
-				cubelets = SOLVED_CUBELETS.copy()
 				solved = False
 				start_time = None
 				scrambled = False
