@@ -19,7 +19,7 @@
 
 
 # --- IMPORTS -------------------------------------------------------------------------------------------------
-from os import system, environ, path
+from os import environ, path
 from random import choice, randint
 from time import sleep
 import sys
@@ -68,7 +68,7 @@ COLORS  = {
 
 # CUBE SETTINGS
 SPIN_FACTOR = 0.9 # Higher = faster and vice versa, between 0 and 1 (when cube is spun with the mouse)
-NORMAL_CUBE_TURN_SPEED = 9 # Should be a divisor of 90 (or very close to it)
+NORMAL_CUBE_TURN_SPEED = 10 # Should be a divisor of 90 (or very close to it)
 SCRAMBLE_CUBE_TURN_SPEED = 18 # Should be a divisor of 90 (or very close to it)
 SCRAMBLE_RANGE = (20, 30) # Min and max number of times to scramble
 
@@ -187,8 +187,6 @@ SOLVED_CUBE = {
 	((2, 0, 6), (4, 0, 6), (4, 2, 6), (2, 2, 6)): COLORS["orange"],
 	((0, 0, 6), (2, 0, 6), (2, 2, 6), (0, 2, 6)): COLORS["orange"],
 
-	# Random thing
-	# ((9, 0, 0), (9, 6, 0), (9, 6, 6), (9, 0, 9), (9, 0, 6)): COLORS["black"]
 }
 
 # used to calculate closest face
@@ -507,11 +505,11 @@ def draw_all(cube, cube_opacity=100):
 
 
 	for vertices in rotated_cube.keys():
-		maxz = max([vertex[2] for vertex in vertices])
-		dists.append((vertices, maxz))
+		avgz = sum([vertex[2] for vertex in vertices])/4
+		dists.append((vertices, avgz))
 	
 
-	# Sort average_zs by average z
+	# Sort average_zs by avg z
 	dists.sort(key=lambda x: x[1], reverse=True)
 
 	# Draw the rotated cube	
